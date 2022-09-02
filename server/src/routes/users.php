@@ -9,12 +9,11 @@ require_once '../src/models/ModelUsers.php';
 
 $app->get('/users', function ($request, $response) {
   try{
-    // $data = ModelUsers::retrieveList();
-    $str = 'select a.id, a.username, a.fullname, b.deptcode ,b.deptname
-            from users a
-            left join department b on a.department_id = b.id ';
+    $data = ModelUsers::retrieveList();
+    // $str = 'select * from users a
+    //         left join department b on a.department_id = b.id ';
 
-    $data = DB::openQuery($str);
+    // $data = DB::openQuery($str);
     $json = json_encode($data);
     $response->getBody()->write($json);
 
@@ -76,7 +75,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
 
   $json = $request->getBody();
 	$obj = json_decode($json);
-  $user = ModelUsers::retrieveLogin($obj->username, $obj->password);
+  $user = ModelUsers::retrieveLogin($obj->username, $obj->userpassword);
   if(!$user) {
     $response->getBody()->write('These credentials do not match our records username');
     return $response->withStatus(401)

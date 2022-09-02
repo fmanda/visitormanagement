@@ -13,6 +13,7 @@ $app->setBasePath('/public');
 
 $app->addErrorMiddleware(true, false, false);
 
+//
 // $app->add(new Tuupola\Middleware\JwtAuthentication([
 //     "regexp" => "/(.*)/", //default format Bearer <token>
 //     "secret" => $config["secret"],
@@ -53,11 +54,12 @@ $app->get('/check', function (Request $request, Response $response, $args) {
 });
 
 require '../src/routes/test.php';
-require '../src/routes/department.php';
-require '../src/routes/kpidept.php';
-require '../src/routes/directory.php';
+require '../src/routes/visit.php';
+//require '../src/routes/department.php';
+//require '../src/routes/kpidept.php';
+//require '../src/routes/directory.php';
 require '../src/routes/users.php';
-require '../src/routes/uploadlog.php';
+//require '../src/routes/uploadlog.php';
 
 // $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], '/{routes:.+}', function ($request, $response) {
 //     throw new HttpNotFoundException($request);

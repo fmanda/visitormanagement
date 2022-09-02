@@ -48,6 +48,20 @@ $app->get('/department/{id}', function ($request, $response, $args) {
 	}
 });
 
+$app->get('/departmentheader/{id}', function ($request, $response, $args) {
+	try{
+    $id = $request->getAttribute('id');
+    $data = ModelDepartment::retrieveHeader($id);
+    $json = json_encode($data);
+    $response->getBody()->write($json);
+		return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+	}catch(Exception $e){
+    $msg = $e->getMessage();
+    $response->getBody()->write($msg);
+		return $response->withStatus(500)
+			->withHeader('Content-Type', 'text/html');
+	}
+});
 
 $app->post('/department', function ($request, $response) {
 	$json = $request->getBody();

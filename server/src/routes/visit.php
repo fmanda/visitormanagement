@@ -4,11 +4,11 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 require '../vendor/autoload.php';
 require_once '../src/classes/DB.php';
-require_once '../src/models/ModelDepartment.php';
+require_once '../src/models/ModelVisit.php';
 
-$app->get('/department_delete/{id}', function ($request, $response) {  //if hosting not allowed del
+$app->get('/visit_delete/{id}', function ($request, $response) {  //if hosting not allowed del
   try{
-    $data = ModelDepartment::deleteFromDB($request->getAttribute('id'));
+    $data = ModelVisit::deleteFromDB($request->getAttribute('id'));
 		return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
 	}catch(Exception $e){
     $msg = $e->getMessage();
@@ -18,9 +18,9 @@ $app->get('/department_delete/{id}', function ($request, $response) {  //if host
 	}
 });
 
-$app->get('/department', function ($request, $response) {
+$app->get('/visit', function ($request, $response) {
   try{
-    $data = ModelDepartment::retrieveList();
+    $data = ModelVisit::retrieveList();
     $json = json_encode($data);
     $response->getBody()->write($json);
 
@@ -33,10 +33,10 @@ $app->get('/department', function ($request, $response) {
 	}
 });
 
-$app->get('/department/{id}', function ($request, $response, $args) {
+$app->get('/visit/{id}', function ($request, $response, $args) {
 	try{
     $id = $request->getAttribute('id');
-    $data = ModelDepartment::retrieve($id);
+    $data = ModelVisit::retrieve($id);
     $json = json_encode($data);
     $response->getBody()->write($json);
 		return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
@@ -49,11 +49,11 @@ $app->get('/department/{id}', function ($request, $response, $args) {
 });
 
 
-$app->post('/department', function ($request, $response) {
+$app->post('/visit', function ($request, $response) {
 	$json = $request->getBody();
 	$obj = json_decode($json);
 	try{
-		ModelDepartment::saveToDB($obj);
+		ModelVisit::saveToDB($obj);
     $json = json_encode($obj);
     $response->getBody()->write($json);
     return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
