@@ -214,8 +214,8 @@ export default {
         if (this.department_id > 0) {
           for (var i = this.depts.length - 1; i >= 0; i--) {
             if (this.depts[i].id !== this.department_id) {
-               this.depts.splice(i, 1);
-             }
+              this.depts.splice(i, 1);
+            }
           }
         }
       });
@@ -225,7 +225,7 @@ export default {
 
       var today = new Date();
       var smst = Math.floor((today.getMonth() + 5) / 6);
-      this.param_period = today.getFullYear().toString() +  ('0' + smst.toString()).substring(0,2);
+      this.param_period = today.getFullYear().toString() + ('0' + smst.toString()).substring(0, 2);
     },
     fetchData() {
       this.listLoading = true

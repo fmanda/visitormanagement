@@ -75,7 +75,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
 
   $json = $request->getBody();
 	$obj = json_decode($json);
-  $user = ModelUsers::retrieveLogin($obj->username, $obj->userpassword);
+  $user = ModelUsers::retrieveLogin($obj->username, $obj->password);
   if(!$user) {
     $response->getBody()->write('These credentials do not match our records username');
     return $response->withStatus(401)

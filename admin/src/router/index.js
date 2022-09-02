@@ -59,7 +59,7 @@ export const constantRoutes = [
     path: '/master',
     component: Layout,
     name: 'Master',
-    meta: { title: 'Master Data', icon: 'table' },
+    meta: { title: 'Data', icon: 'table' },
     children: [
       {
         path: 'department',
@@ -68,14 +68,14 @@ export const constantRoutes = [
         meta: { title: 'Department', icon: 'link' }
       },
 
-      {
-        props: true,
-        path: 'update_department',
-        name: 'update_department',
-        component: () => import('@/views/master/department/update'),
-        meta: { title: 'Update Department', icon: 'link' },
-        hidden: true
-      },
+      // {
+      //   props: true,
+      //   path: 'update_department',
+      //   name: 'update_department',
+      //   component: () => import('@/views/master/department/update'),
+      //   meta: { title: 'Update Department', icon: 'link' },
+      //   hidden: true
+      // },
 
       {
         path: 'users',
@@ -87,15 +87,15 @@ export const constantRoutes = [
   },
 
   {
-    path: '/register',
+    path: '/visit',
     // name: 'upload_p',
     component: Layout,
     children: [
       {
-        path: 'register',
-        name: 'register',
-        component: () => import('@/views/register/index'),
-        meta: { title: 'Register KPI', icon: 'password' }
+        path: 'visit',
+        name: 'visit',
+        component: () => import('@/views/visit/index'),
+        meta: { title: 'Kunjungan', icon: 'password' }
       }
     ]
   },
@@ -115,55 +115,71 @@ export const constantRoutes = [
   },
 
   {
-    path: '/preview',
+    path: '/report',
     component: Layout,
-    hidden: true,
+    name: 'Report',
+    meta: { title: 'Laporan', icon: 'table' },
     children: [
       {
-        path: 'preview',
-        name: 'preview',
-        component: () => import('@/views/preview/index'),
-        meta: { title: 'Preview Data', icon: 'eye-open' }
+        path: 'visitreport',
+        name: 'Buku Tamu',
+        component: () => import('@/views/master/department/index'),
+        meta: { title: 'Department', icon: 'link' }
+      },
+      {
+        path: 'visitorreport',
+        name: 'Data Pengunjung',
+        component: () => import('@/views/master/department/index'),
+        meta: { title: 'Department', icon: 'link' }
       }
+      // {
+      //   props: true,
+      //   path: 'update_department',
+      //   name: 'update_department',
+      //   component: () => import('@/views/master/department/update'),
+      //   meta: { title: 'Update Department', icon: 'link' },
+      //   hidden: true
+      // },
+
     ]
   },
 
-  {
-    path: '/directory',
-    component: Layout,
-    children: [
-      {
-        path: 'directory',
-        name: 'Directory',
-        component: () => import('@/views/directory/index'),
-        meta: { title: 'Directory', icon: 'nested' }
-      }
-    ]
-  },
-  {
-    path: '/uploadlog',
-    component: Layout,
-    children: [
-      {
-        path: 'uploadlog',
-        name: 'uploadlog',
-        component: () => import('@/views/upload/log'),
-        meta: { title: 'Log Upload', icon: 'example' }
-      }
-    ]
-  },
-  {
-    path: '/assesment',
-    component: Layout,
-    children: [
-      {
-        path: 'assesment',
-        name: 'assesment',
-        component: () => import('@/views/assesment/index'),
-        meta: { title: 'Assesment', icon: 'tree' }
-      }
-    ]
-  },
+  // {
+  //   path: '/directory',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'directory',
+  //       name: 'Directory',
+  //       component: () => import('@/views/directory/index'),
+  //       meta: { title: 'Directory', icon: 'nested' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/uploadlog',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'uploadlog',
+  //       name: 'uploadlog',
+  //       component: () => import('@/views/upload/log'),
+  //       meta: { title: 'Log Upload', icon: 'example' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/assesment',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'assesment',
+  //       name: 'assesment',
+  //       component: () => import('@/views/assesment/index'),
+  //       meta: { title: 'Assesment', icon: 'tree' }
+  //     }
+  //   ]
+  // },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
