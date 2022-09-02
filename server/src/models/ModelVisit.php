@@ -16,7 +16,10 @@
 		}
 
 		public static function retrieveList($filter=''){
-			$sql = 'select a.*, b.* from '.static::getTableName().' a left join visitor b on a.visitor_id = b.id ';
+			$sql = 'select a.*, b.*, c.deptname from visit a
+							left join visitor b on a.visitor_id = b.id
+							left join department c on a.dept_id = c.id
+							';
 			if ($filter<>''){
 				$sql = $sql .' and '. $filter;
 			}

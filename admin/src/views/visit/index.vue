@@ -8,9 +8,12 @@
       background-color="#545c64"
       text-color="#fff"
       active-text-color="#ffd04b">
-      <el-menu-item index="1">Sedang Berjalan</el-menu-item>
-      <el-menu-item index="2">Berdasarkan Tanggal</el-menu-item>
+      <el-menu-item index="1">Sedang Berlangsung</el-menu-item>
+      <el-menu-item index="2">Semua Kunjungan</el-menu-item>
+
     </el-menu>
+
+    <br/>
 
     <el-table
       :v-loading="listLoading"
@@ -29,82 +32,125 @@
 
           </el-card> -->
 
-          <el-descriptions class="margin-top" title="With border" :column="3" size="" border>
-            <template slot="extra">
+          <el-descriptions class="margin-top" title="" :column="1" size="" border>
+            <!-- <template slot="extra">
               <el-button type="primary" size="small">Operation</el-button>
-            </template>
-            <el-descriptions-item>
+            </template> -->
+            <!-- <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-user"></i>
-                Username
+                Menemui Karyawan
               </template>
               kooriookami
-            </el-descriptions-item>
+            </el-descriptions-item> -->
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-mobile-phone"></i>
-                Telephone
+                No. Telepon
               </template>
               18100000000
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-location-outline"></i>
-                Place
+                Instansi
               </template>
-              Suzhou
+              <el-tag>School</el-tag>
             </el-descriptions-item>
-            <el-descriptions-item>
-              <template slot="label">
-                <i class="el-icon-tickets"></i>
-                Remarks
-              </template>
-              <el-tag size="small">School</el-tag>
-            </el-descriptions-item>
-            <el-descriptions-item>
+            <el-descriptions-item label-class-name="my-label">
               <template slot="label">
                 <i class="el-icon-office-building"></i>
-                Address
+                Alamaat
               </template>
               No.1188, Wuzhong Avenue, Wuzhong District, Suzhou, Jiangsu Province
             </el-descriptions-item>
+            <el-descriptions-item label-class-name="my-label">
+              <template slot="label">
+                <i class="el-icon-tickets"></i>
+                Keperluan
+              </template>
+              Diskusi bisnis
+            </el-descriptions-item>
           </el-descriptions>
 
-          <el-timeline reverse="false">
+          <!-- <el-timeline>
           <el-timeline-item :timestamp="props.row.entrydate">Masuk</el-timeline-item>
           <el-timeline-item :timestamp="props.row.exitdate">Keluar</el-timeline-item>
-        </el-timeline>
+        </el-timeline> -->
         </template>
       </el-table-column>
-      <el-table-column label="Pengunjung" prop="visitorname" />
-      <el-table-column label="Keperluan" prop="reason" />
-      <el-table-column label="Department|Karyawan" prop="department" />
-      <el-table-column label="Masuk" prop="entrydate" />
-      <el-table-column label="Keluar" prop="exitdate" />
+      <el-table-column label="Pengunjung" prop="visitorname" sortable/>
+      <!-- <el-table-column label="Keperluan" prop="reason" /> -->
+      <el-table-column label="Menemui" prop="person_to_meet" sortable/>
+      <el-table-column label="Department" prop="deptname" sortable/>
       <el-table-column
+        label="Masuk"
+        width="180"
+        sortable
+        >
+        <template slot-scope="scope">
+          <!-- <i class="el-icon-time"></i> -->
+          <span style="margin-left: 10px">{{ scope.row.entrydate }}</span>
+        </template>
+      </el-table-column>
+
+      <!-- <el-table-column
+        label="Keluar"
+        width="180">
+        <template slot-scope="scope">
+          <span style="margin-left: 10px">{{ scope.row.exitdate }}</span>
+        </template>
+      </el-table-column> -->
+
+      <el-table-column
+        label="Durasi"
+        width="120"
+        sortable
+        >
+        <template slot-scope="scope">
+          <i class="el-icon-time"></i>
+          <span style="margin-left: 10px">1:24:30</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        fixed="right"
+        label="Status"
+        width="100">
+        <template slot-scope="scope">
+          <el-button  type="text"
+            size="small">
+            Keluar
+          </el-button>
+        </template>
+      </el-table-column>
+
+      <!-- <el-table-column label="Keluar" prop="exitdate" /> -->
+      <!-- <el-table-column
         align="right"
-      >
-        <template slot="header" slot-scope="scope">
+      > -->
+        <!-- <template slot="header" slot-scope="scope">
           <el-input
             v-model="search"
             size="mini"
             placeholder="Type to search"
           />
           <span hidden>{{ scope.row }}</span>
-        </template>
-        <template slot-scope="scope">
+        </template> -->
+        <!-- <template slot-scope="scope">
+          </el-steps>
           <el-button
             size="mini"
             @click="handleEdit(scope.$index, scope.row)"
-          >Edit</el-button>
+          >Edit</el-button> -->
           <!-- <el-button
             v-if="scope.row.deptcode !== null "
             size="mini"
             type="danger"
             @click="handleDelete(scope.$index, scope.row)"
           >Delete</el-button> -->
-        </template>
-      </el-table-column>
+        <!-- </template> -->
+      <!-- </el-table-column> -->
     </el-table>
     <br>
     <el-button type="success" icon="el-icon-plus" @click.native.prevent="handleNew()">Add Department</el-button>
@@ -193,6 +239,10 @@ export default {
 </script>
 
 <style scoped>
+  .my-label {
+    background: #E1F3D8;
+  }
+
   .el-table >>> .cell {
     word-break: break-word;
     white-space: pre-wrap;
@@ -208,4 +258,7 @@ export default {
     /* color: rgb(191, 203, 217); */
     background: #304156;
   }
+
+
+
 </style>
