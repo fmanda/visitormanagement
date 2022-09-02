@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'Evidence Upload Portal',
+  title: 'Buku Tamu Tiga Serangkai',
 
   /**
    * @type {boolean} true | false
