@@ -1,6 +1,8 @@
-# DemoKPI
+# Visitor Management
 
-Sample SPA Web untuk keperluan entry, upload, dan monitoring data KPI Karyawan
+clone template dari demokpi, utk keperluan demo kantor 
+masih pakai vuejs 2
+Rencanan akan dimigrasikan ke vuejs 3 + migrasi coding ke composition api
 
 
 ## admin
@@ -14,4 +16,3 @@ Rencana pakai ExpressJS, tapi karena cuma ada 1 public hosting client yg bisa di
 
 
 
-Copyright (c) 2020-present Fmanda
