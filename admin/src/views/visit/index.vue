@@ -155,18 +155,149 @@
     <br>
     <el-button type="success" icon="el-icon-plus" @click.native.prevent="handleNew()">Add Department</el-button>
 
-    <el-dialog :title="dialogData.caption" :visible.sync="dialogVisible" width="600px">
-      <el-form ref="form" :model="dialogData" label-width="120px">
-        <el-form-item label="Dept Code">
-          <el-input v-model="dialogData.deptcode" />
-        </el-form-item>
-        <el-form-item label="Dept Name">
-          <el-input v-model="dialogData.deptname" />
-        </el-form-item>
-      </el-form>
+    <el-dialog :title="dialogData.caption" :visible.sync="dialogVisible" width="800px">
+      <el-row>
+        <el-col :span="12">
+          <el-descriptions class="margin-top" title="" :column="1" border>
+            <el-descriptions-item>
+              <template slot="label">
+                <i class="el-icon-user"></i>
+                Nama
+              </template>
+              <el-input v-model="dialogData.Nama"></el-input>
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template slot="label">
+                <i class="el-icon-office-building"></i>
+                Instansi
+              </template>
+              <el-input v-model="dialogData.Nama"></el-input>
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template slot="label">
+                <i class="el-icon-mobile-phone"></i>
+                Telepon
+              </template>
+              <el-input v-model="dialogData.Nama"></el-input>
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template slot="label">
+                <i class="el-icon-location-outline"></i>
+                Alamat
+              </template>
+              <el-input
+                type="textarea"
+                :rows="2"
+                v-model="dialogData.Alamat">
+              </el-input>
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template slot="label">
+                <i class="el-icon-mobile-phone"></i>
+                No. Identitas
+              </template>
+              <el-input v-model="dialogData.Nama"></el-input>
+            </el-descriptions-item>
+          </el-descriptions>
+        </el-col>
+
+        <el-col :span="12">
+          <el-descriptions class="margin-top" title="" :column="1" border>
+            <el-descriptions-item>
+              <template slot="label">
+                <i class="el-icon-user"></i>
+                Department
+              </template>
+              <el-input v-model="dialogData.Nama"></el-input>
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template slot="label">
+                <i class="el-icon-office-building"></i>
+                Karyawan
+              </template>
+              <el-input v-model="dialogData.Nama"></el-input>
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template slot="label">
+                <i class="el-icon-location-outline"></i>
+                Keperluan
+              </template>
+              <el-input v-model="dialogData.Alamat">
+              </el-input>
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template slot="label">
+                <i class="el-icon-mobile-phone"></i>
+                Foto
+              </template>
+              <el-skeleton style="width: 140px">
+                <template slot="template">
+                  <el-skeleton-item variant="image" style="width: 180px; height: 131px;" />
+                  <!-- <div style="padding: 14px;">
+                    <el-skeleton-item variant="p" style="width: 50%" />
+                    <div
+                      style="display: flex; align-items: center; justify-items: space-between;"
+                    >
+                      <el-skeleton-item variant="text" style="margin-right: 16px;" />
+                      <el-skeleton-item variant="text" style="width: 30%;" />
+                    </div>
+                  </div> -->
+                </template>
+              </el-skeleton>
+            </el-descriptions-item>
+
+          </el-descriptions>
+        </el-col>
+      </el-row>
+
+
+
+        <!-- <el-row>
+          <el-col :span="12">
+            <el-form ref="form" :model="dialogData" label-width="150px" >
+              <el-form-item label="Nama Pengunjung">
+                <el-input v-model="dialogData.deptcode" />
+              </el-form-item>
+              <el-form-item label="Dari Instansi">
+                <el-input v-model="dialogData.deptname" />
+              </el-form-item>
+              <el-form-item label="Alamat Pengunjung">
+                <el-input
+                  type="textarea"
+                  :rows="2"
+                  v-model="dialogData.Alamat">
+                </el-input>
+              </el-form-item>
+              <el-form-item label="No. Telepon">
+              <el-input v-model="dialogData.deptname" />
+              </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col :span="12">
+            <el-form ref="form" :model="dialogData" label-width="150px" >
+              <el-form-item label="Department">
+                <el-input v-model="dialogData.deptname" />
+              </el-form-item>
+              <el-form-item label="Menemui">
+                <el-input v-model="dialogData.deptname" />
+              </el-form-item>
+              <el-form-item label="Keperluan">
+                <el-input
+                  type="textarea"
+                  :rows="2"
+                  v-model="dialogData.Alamat">
+                </el-input>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row> -->
+
+      <!-- </el-card> -->
+
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click.native.prevent="saveData()">Update</el-button>
-        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button style ="float: left;" @click.native.prevent="saveData()">Ambil Foto</el-button>
+        <el-button type="primary" @click.native.prevent="saveData()">Simpan</el-button>
+        <el-button type="danger" @click="dialogVisible = false">Batal</el-button>
       </span>
     </el-dialog>
 
@@ -239,26 +370,25 @@ export default {
 </script>
 
 <style scoped>
-  .my-label {
-    background: #E1F3D8;
-  }
-
   .el-table >>> .cell {
     word-break: break-word;
     white-space: pre-wrap;
   }
-
   .el-table >>> thead {
     color: rgb(191, 203, 217);
     font-weight: 500;
     background: #304156;
   }
-
   .el-table >>> th {
-    /* color: rgb(191, 203, 217); */
     background: #304156;
   }
+  .el-form-item {
+    margin-bottom: 15px;
+  }
+</style>
 
-
-
+<style>
+   .el-descriptions-item__cell.el-descriptions-item__label.is-bordered-label {
+     width: 120px;
+   }
 </style>
