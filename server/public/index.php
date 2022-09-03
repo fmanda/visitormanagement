@@ -54,6 +54,7 @@ $app->get('/check', function (Request $request, Response $response, $args) {
 });
 
 require '../src/routes/test.php';
+require '../src/routes/visitor.php';
 require '../src/routes/visit.php';
 require '../src/routes/department.php';
 //require '../src/routes/kpidept.php';

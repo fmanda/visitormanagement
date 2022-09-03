@@ -1,6 +1,8 @@
 create table visitor(
 	id serial primary key,
 	visitorname varchar(150),
+	phone varchar(50),
+	company varchar(150),
 	address varchar(255),
 	idcardno varchar(100),
 	lastvisit_id int
@@ -39,6 +41,11 @@ create table testdetail(
 	detailcode varchar(150)
 )
 
+create table visitimage(
+	visit_id int,
+	img1 BYTEA,
+	img2 BYTEA
+)
 
 # prepare
 - design db (ok)

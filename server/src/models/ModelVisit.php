@@ -12,6 +12,14 @@
 		public static function retrieve($id){
 			$obj = parent::retrieve($id);
 			if (isset($obj->visitor_id)) $obj->visitor = ModelVisitor::retrieve($obj->visitor_id);
+			if (isset($obj->dept_id)) $obj->department = ModelDepartment::retrieve($obj->dept_id);
+
+			$str = "SELECT imgpath1 FROM visitimage where visit_id = " . $id  . " and imgpath1 is not null order by imgpath1 desc";
+	    $rows =  DB::openQuery($str);
+			if (isset($rows[0])) {
+				$obj->imgpath1 = $rows[0]->imgpath1;
+			}
+
 			return $obj;
 		}
 
@@ -50,8 +58,12 @@
 				}
 				static::saveObjToDB($obj, $db);
 
-				if (isset($obj->visitor_id)) {
+				if (( isset($obj->visitor_id)) && (isset($obj->visitor)) ){
 					$sql = 'update visitor set lastvisit_id = '. $db->quote($obj->id)
+							. ' , visitorname = '. $db->quote($obj->visitor->visitorname)
+							. ' , address = '. $db->quote($obj->visitor->address)
+							. ' , idcardno = '. $db->quote($obj->visitor->idcardno)
+							. ' , company = '. $db->quote($obj->visitor->company)
 							. ' where id = '. $db->quote($obj->visitor_id);
 					$db->prepare($sql)->execute();
 				}

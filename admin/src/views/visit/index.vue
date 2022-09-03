@@ -116,12 +116,14 @@
       <el-table-column
         fixed="right"
         label="Status"
-        width="100">
+        width="140">
         <template slot-scope="scope">
-          <el-button  type="text"
-            size="small">
-            Keluar
-          </el-button>
+          <el-button-group>
+            <el-button plain icon="el-icon-edit-outline" size="small" @click="handleEdit(scope.$index, scope.row)"></el-button>
+            <el-button plain size="small">Keluar</el-button>
+          </el-button-group>
+          <!-- <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
+          <el-button type="danger" round size="mini">Keluar</el-button>       -->
         </template>
       </el-table-column>
 
@@ -153,7 +155,7 @@
       <!-- </el-table-column> -->
     </el-table>
     <br>
-    <el-button type="success" icon="el-icon-plus" @click.native.prevent="handleNew()">Add Department</el-button>
+    <el-button type="success" icon="el-icon-plus" @click.native.prevent="handleNew()">Rekam Data Kunjungan</el-button>
 
     <el-dialog :title="dialogData.caption" :visible.sync="dialogVisible" width="800px">
       <el-row>
@@ -164,21 +166,21 @@
                 <i class="el-icon-user"></i>
                 Nama
               </template>
-              <el-input v-model="dialogData.Nama"></el-input>
+              <el-input v-model="dialogData.visitor.visitorname"></el-input>
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-office-building"></i>
                 Instansi
               </template>
-              <el-input v-model="dialogData.Nama"></el-input>
+              <el-input v-model="dialogData.visitor.company"></el-input>
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-mobile-phone"></i>
                 Telepon
               </template>
-              <el-input v-model="dialogData.Nama"></el-input>
+              <el-input v-model="dialogData.visitor.phone"></el-input>
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
@@ -188,7 +190,7 @@
               <el-input
                 type="textarea"
                 :rows="2"
-                v-model="dialogData.Alamat">
+                v-model="dialogData.visitor.address">
               </el-input>
             </el-descriptions-item>
             <el-descriptions-item>
@@ -196,7 +198,7 @@
                 <i class="el-icon-mobile-phone"></i>
                 No. Identitas
               </template>
-              <el-input v-model="dialogData.Nama"></el-input>
+              <el-input v-model="dialogData.visitor.idcardno"></el-input>
             </el-descriptions-item>
           </el-descriptions>
         </el-col>
@@ -208,21 +210,21 @@
                 <i class="el-icon-user"></i>
                 Department
               </template>
-              <el-input v-model="dialogData.Nama"></el-input>
+              <el-input v-model="dialogData.department.deptname"></el-input>
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-office-building"></i>
                 Karyawan
               </template>
-              <el-input v-model="dialogData.Nama"></el-input>
+              <el-input v-model="dialogData.person_to_meet"></el-input>
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-location-outline"></i>
                 Keperluan
               </template>
-              <el-input v-model="dialogData.Alamat">
+              <el-input v-model="dialogData.reason">
               </el-input>
             </el-descriptions-item>
             <el-descriptions-item>
@@ -232,16 +234,9 @@
               </template>
               <el-skeleton style="width: 140px">
                 <template slot="template">
-                  <el-skeleton-item variant="image" style="width: 180px; height: 131px;" />
-                  <!-- <div style="padding: 14px;">
-                    <el-skeleton-item variant="p" style="width: 50%" />
-                    <div
-                      style="display: flex; align-items: center; justify-items: space-between;"
-                    >
-                      <el-skeleton-item variant="text" style="margin-right: 16px;" />
-                      <el-skeleton-item variant="text" style="width: 30%;" />
-                    </div>
-                  </div> -->
+                  <el-image style="width: 180px; height: 131px;" :src="img" >
+                      <el-skeleton-item slot="error"  variant="image" style="width: 100%; height:100%" />
+                  </el-image>
                 </template>
               </el-skeleton>
             </el-descriptions-item>
@@ -251,97 +246,159 @@
       </el-row>
 
 
-
-        <!-- <el-row>
-          <el-col :span="12">
-            <el-form ref="form" :model="dialogData" label-width="150px" >
-              <el-form-item label="Nama Pengunjung">
-                <el-input v-model="dialogData.deptcode" />
-              </el-form-item>
-              <el-form-item label="Dari Instansi">
-                <el-input v-model="dialogData.deptname" />
-              </el-form-item>
-              <el-form-item label="Alamat Pengunjung">
-                <el-input
-                  type="textarea"
-                  :rows="2"
-                  v-model="dialogData.Alamat">
-                </el-input>
-              </el-form-item>
-              <el-form-item label="No. Telepon">
-              <el-input v-model="dialogData.deptname" />
-              </el-form-item>
-            </el-form>
-          </el-col>
-          <el-col :span="12">
-            <el-form ref="form" :model="dialogData" label-width="150px" >
-              <el-form-item label="Department">
-                <el-input v-model="dialogData.deptname" />
-              </el-form-item>
-              <el-form-item label="Menemui">
-                <el-input v-model="dialogData.deptname" />
-              </el-form-item>
-              <el-form-item label="Keperluan">
-                <el-input
-                  type="textarea"
-                  :rows="2"
-                  v-model="dialogData.Alamat">
-                </el-input>
-              </el-form-item>
-            </el-form>
-          </el-col>
-        </el-row> -->
-
-      <!-- </el-card> -->
-
       <span slot="footer" class="dialog-footer">
-        <el-button style ="float: left;" @click.native.prevent="saveData()">Ambil Foto</el-button>
+        <el-button style ="float: left;" @click.native.prevent="showDialogPhoto()">Ambil Foto</el-button>
         <el-button type="primary" @click.native.prevent="saveData()">Simpan</el-button>
         <el-button type="danger" @click="dialogVisible = false">Batal</el-button>
       </span>
     </el-dialog>
 
+    <el-dialog title="Foto Pengunjung" :visible.sync="dialogPhotoVisible" width="800px">
+      <code v-if="device">{{ device.label }}</code>
+        <web-cam ref="webcam"
+                 :device-id="deviceId"
+                 width="100%"
+                 @started="onStarted"
+                 @stopped="onStopped"
+                 @error="onError"
+                 @cameras="onCameras"
+                 @camera-change="onCameraChange" />
+
+          <!-- <button type="button"
+                  class="btn btn-primary"
+                  @click="onCapture">Capture Photo</button>
+          <button type="button"
+                  class="btn btn-danger"
+                  @click="onStop">Stop Camera</button>
+          <button type="button"
+                  class="btn btn-success"
+                  @click="onStart">Start Camera</button> -->
+
+      <!-- <figure class="figure">
+        <img :src="img" class="img-responsive" >
+      </figure> -->
+
+      <span slot="footer" class="dialog-footer">
+        <el-select v-model="camera" style ="float: left;">
+          <el-option value="null">-- Select Device --</el-option>
+          <el-option
+            v-for="device in devices"
+            :key="device.deviceId"
+            :label="device.label"
+            :value="device.deviceId">
+          </el-option>
+
+        </el-select>
+        <el-button type="primary" style ="float: center;" @click.native.prevent="onCapture">Ambil Foto</el-button>
+        <el-button type="danger" @click="dialogPhotoVisible = false">Batal</el-button>
+        <!-- <el-button type="primary" style ="right: center;" @click.native.prevent="onStart">Start Camera</el-button> -->
+      </span>
+    </el-dialog>
+
+
   </div>
+
+
 </template>
 
 <script>
-import { getVisit, getListVisit, postVisit } from '@/api/visit'
+import { getVisit, getListVisit, postVisit, getVisitImgURL } from '@/api/visit'
+import { WebCam } from "vue-web-cam";
+import { find, head } from "lodash";
 
 export default {
+  components: {
+    WebCam
+  },
   data() {
     return {
       data: [],
       listLoading: true,
       search: '',
       dialogData: {
-        caption: ''
+        caption: '',
+        visitor: {
+        },
+        department : {
+
+        }
       },
       dialogVisible: false,
-      activeMenu : "1"
+      dialogPhotoVisible: false,
+      activeMenu : "1",
+      img: null,
+      camera: null,
+      deviceId: null,
+      devices: []
     }
   },
   created() {
     this.fetchData()
   },
+  computed: {
+    device() {
+      return find(this.devices, n => n.deviceId == this.deviceId);
+    }
+  },
+  watch: {
+    camera: function(id) {
+      this.deviceId = id;
+    },
+    devices: function() {
+      // Once we have a list select the first one
+      let first = head(this.devices);
+      if (first) {
+        this.camera = first.deviceId;
+        this.deviceId = first.deviceId;
+      }
+    },
+    dialogPhotoVisible: function(){
+      if (this.$refs.webcam){
+        if (this.dialogPhotoVisible){
+          this.$refs.webcam.start();
+        }else{
+          console.log('stop');
+          this.$refs.webcam.stop();
+        }
+      }
+    }
+  },
   methods: {
     fetchData() {
-      this.listLoading = true
+      this.listLoading = true;
+      this.img = null;
       getListVisit().then(response => {
         this.data = response.data;
         this.listLoading = false
       })
     },
     showDialog(id) {
+      this.img = null;
       getVisit(id).then(response => {
         this.dialogData = response.data;
+        console.log(this.dialogData);
         if (id === 0) {
           this.dialogData = { caption: '' }
         } else {
-          this.dialogData.caption = 'Edit Department';
+          this.dialogData.caption = 'Edit Data Kunjungan';
         }
+
+        this.img = getVisitImgURL(this.dialogData.imgpath1);
+        console.log(this.img);
 
         this.dialogVisible = true;
       })
+
+      console.log(this.image);
+
+      // getVisitImage(id).then(response => {
+      //   console.log('visit image');
+      //   console.log(response.data);
+      //   // this.img = response.data;
+      // })
+    },
+    showDialogPhoto(){
+      this.dialogPhotoVisible = true;
     },
     handleEdit(index, row) {
       this.showDialog(row.id);
@@ -356,7 +413,7 @@ export default {
     },
     saveData() {
       var vm = this;
-      postVisit(this.dialogData).then(response => {
+      postVisit(this.dialogData, this.img).then(response => {
         vm.$message({
           type: 'success',
           message: 'Data Berhasil Disimpan'
@@ -364,6 +421,41 @@ export default {
         vm.dialogVisible = false;
         vm.fetchData();
       })
+    },
+    onCapture() {
+      this.img = this.$refs.webcam.capture();
+      this.dialogPhotoVisible = false;
+    },
+    onStarted(stream) {
+      console.log("On Started Event", stream);
+    },
+    onStopped(stream) {
+      console.log("On Stopped Event", stream);
+    },
+    onStop() {
+      this.$refs.webcam.stop();
+    },
+    onStart() {
+      this.$refs.webcam.start();
+    },
+    onError(error) {
+      console.log("On Error Event", error);
+    },
+    onCameras(cameras) {
+      this.devices = cameras;
+
+      // //empty item__label
+      // this.devices.forEach(function(item) {
+      //   item.label = 'Camera 1';//setting the value
+      //   delete item.num;//deleting the num from the object
+      // });
+      // console.log(this.devices);
+      console.log("On Cameras Event", this.devices);
+    },
+    onCameraChange(deviceId) {
+      this.deviceId = deviceId;
+      this.camera = deviceId;
+      console.log("On Camera Change Event", deviceId);
     }
   }
 }

@@ -4,7 +4,7 @@
 	class ModelVisitor extends BaseModel{
 		public static function getFields(){
 			return array(
-				"visitorname", "address", "idcardno", "lastvisit_id"
+				"visitorname", "address", "idcardno", "lastvisit_id", "company", "phone"
 			);
 		}
 
