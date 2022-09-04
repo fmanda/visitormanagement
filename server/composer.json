@@ -7,6 +7,7 @@
         "guzzlehttp/psr7": "^1.6",
         "http-interop/http-factory-guzzle": "^1.0",
         "laminas/laminas-diactoros": "^2.2",
-        "tuupola/slim-jwt-auth": "^3.4"        
+        "tuupola/slim-jwt-auth": "^3.4",
+        "tuupola/cors-middleware": "^1.3"        
     }
 }

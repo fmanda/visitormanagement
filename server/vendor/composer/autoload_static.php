@@ -8,8 +8,9 @@ class ComposerStaticInit963113c1bcc1bbec4d4808358de346a6
 {
     public static $files = array (
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
-        '7e9bd612cc444b3eed788ebbe46263a0' => __DIR__ . '/..' . '/laminas/laminas-zendframework-bridge/src/autoload.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        '7e9bd612cc444b3eed788ebbe46263a0' => __DIR__ . '/..' . '/laminas/laminas-zendframework-bridge/src/autoload.php',
+        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '07d7f1a47144818725fd8d91a907ac57' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/create_uploaded_file.php',
         'da94ac5d3ca7d2dbab84ce561ce72bfd' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/marshal_headers_from_sapi.php',
         '3d97c8dcdfba8cb85d3b34f116bb248b' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/marshal_method_from_sapi.php',
@@ -26,7 +27,6 @@ class ComposerStaticInit963113c1bcc1bbec4d4808358de346a6
         'cc8e14526dc240491e17a838cb78508c' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/normalize_server.legacy.php',
         '786bf90caabc9e09b6ad4cc5ca8f0e30' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/normalize_uploaded_files.legacy.php',
         '751a5a3f463e4be759be31748b61737c' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/parse_cookie_header.legacy.php',
-        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -38,7 +38,6 @@ class ComposerStaticInit963113c1bcc1bbec4d4808358de346a6
         'S' => 
         array (
             'Slim\\Psr7\\' => 10,
-            'Slim\\Http\\' => 10,
             'Slim\\' => 5,
         ),
         'P' => 
@@ -52,6 +51,7 @@ class ComposerStaticInit963113c1bcc1bbec4d4808358de346a6
         array (
             'Nyholm\\Psr7\\' => 12,
             'Nyholm\\Psr7Server\\' => 18,
+            'Neomerx\\Cors\\' => 13,
         ),
         'L' => 
         array (
@@ -80,6 +80,7 @@ class ComposerStaticInit963113c1bcc1bbec4d4808358de346a6
         array (
             0 => __DIR__ . '/..' . '/tuupola/callable-handler/src',
             1 => __DIR__ . '/..' . '/tuupola/slim-jwt-auth/src',
+            2 => __DIR__ . '/..' . '/tuupola/cors-middleware/src',
         ),
         'Tuupola\\Http\\Factory\\' => 
         array (
@@ -88,10 +89,6 @@ class ComposerStaticInit963113c1bcc1bbec4d4808358de346a6
         'Slim\\Psr7\\' => 
         array (
             0 => __DIR__ . '/..' . '/slim/psr7/src',
-        ),
-        'Slim\\Http\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/slim/http/src',
         ),
         'Slim\\' => 
         array (
@@ -122,6 +119,10 @@ class ComposerStaticInit963113c1bcc1bbec4d4808358de346a6
         'Nyholm\\Psr7Server\\' => 
         array (
             0 => __DIR__ . '/..' . '/nyholm/psr7-server/src',
+        ),
+        'Neomerx\\Cors\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/neomerx/cors-psr7/src',
         ),
         'Laminas\\ZendFrameworkBridge\\' => 
         array (
@@ -157,11 +158,16 @@ class ComposerStaticInit963113c1bcc1bbec4d4808358de346a6
         ),
     );
 
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit963113c1bcc1bbec4d4808358de346a6::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit963113c1bcc1bbec4d4808358de346a6::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit963113c1bcc1bbec4d4808358de346a6::$classMap;
 
         }, null, ClassLoader::class);
     }
