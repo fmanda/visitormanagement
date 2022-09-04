@@ -24,7 +24,7 @@
 		}
 
 		public static function retrieveList($filter=''){
-			$sql = 'select a.*, b.*, c.deptname from visit a
+			$sql = 'select a.*, b.visitorname, b.company, b.address, b.idcardno, b.phone , c.deptname from visit a
 							left join visitor b on a.visitor_id = b.id
 							left join department c on a.dept_id = c.id
 							';
@@ -50,6 +50,12 @@
 			$db = $db->connect();
 			$db->beginTransaction();
 			try {
+				if ( !isset($obj->entrydate)) {
+
+					date_default_timezone_set('Asia/Jakarta');
+					$date = new \DateTime();
+					$obj->entrydate = $date->format('Y-m-d H:i:s');
+				}
 
 				if (ModelVisit::isNewVisitor($obj)){
 					if (!isset($obj->visitor)) throw new Exception('Visitor Object empty');

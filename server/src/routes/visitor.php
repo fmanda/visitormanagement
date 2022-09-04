@@ -33,6 +33,24 @@ $app->get('/visitor', function ($request, $response) {
 	}
 });
 
+$app->get('/visitorbyname/{filter}', function ($request, $response) {
+  try{
+    $filter = $request->getAttribute('filter');
+    $filter = " lower(visitorname) like '%".   strtolower($filter)  . "%'";
+    $filter = $filter . " limit 300";
+    $data = ModelVisitor::retrieveList($filter);
+    $json = json_encode($data);
+    $response->getBody()->write($json);
+
+		return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+	}catch(Exception $e){
+    $msg = $e->getMessage();
+    $response->getBody()->write($msg);
+		return $response->withStatus(500)
+			->withHeader('Content-Type', 'text/html');
+	}
+});
+
 $app->get('/visitor/{id}', function ($request, $response, $args) {
 	try{
     $id = $request->getAttribute('id');

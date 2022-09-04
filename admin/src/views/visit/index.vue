@@ -15,68 +15,55 @@
 
     <br/>
 
-    <el-table
+    <!-- <el-table
       :v-loading="listLoading"
       :data="data.filter(data => !search || data.deptname.toLowerCase().includes(search.toLowerCase()))"
+      style="width: 100%"
+    > -->
+
+    <el-table
+      :v-loading="listLoading"
+      :data="data"
       style="width: 100%"
     >
 
 
       <el-table-column type="expand">
         <template slot-scope="props">
-          <!-- <el-card class="box-card">
-            <p>State: {{ props.row.state }}</p>
-            <p>City: {{ props.row.city }}</p>
-            <p>Address: {{ props.row.address }}</p>
-            <p>Zip: {{ props.row.zip }}</p>
 
-          </el-card> -->
 
-          <el-descriptions class="margin-top" title="" :column="1" size="" border>
-            <!-- <template slot="extra">
-              <el-button type="primary" size="small">Operation</el-button>
-            </template> -->
-            <!-- <el-descriptions-item>
-              <template slot="label">
-                <i class="el-icon-user"></i>
-                Menemui Karyawan
-              </template>
-              kooriookami
-            </el-descriptions-item> -->
+          <el-descriptions class="margin-top" style="margin-left: 50px;" title="" :column="1" size="" border>
+
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-mobile-phone"></i>
                 No. Telepon
               </template>
-              18100000000
+              {{props.row.phone}}
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-location-outline"></i>
                 Instansi
               </template>
-              <el-tag>School</el-tag>
+              {{props.row.company}}
             </el-descriptions-item>
             <el-descriptions-item label-class-name="my-label">
               <template slot="label">
                 <i class="el-icon-office-building"></i>
                 Alamaat
               </template>
-              No.1188, Wuzhong Avenue, Wuzhong District, Suzhou, Jiangsu Province
+              {{props.row.address}}
             </el-descriptions-item>
             <el-descriptions-item label-class-name="my-label">
               <template slot="label">
                 <i class="el-icon-tickets"></i>
                 Keperluan
               </template>
-              Diskusi bisnis
+              {{props.row.reason}}
             </el-descriptions-item>
           </el-descriptions>
 
-          <!-- <el-timeline>
-          <el-timeline-item :timestamp="props.row.entrydate">Masuk</el-timeline-item>
-          <el-timeline-item :timestamp="props.row.exitdate">Keluar</el-timeline-item>
-        </el-timeline> -->
         </template>
       </el-table-column>
       <el-table-column label="Pengunjung" prop="visitorname" sortable/>
@@ -94,13 +81,6 @@
         </template>
       </el-table-column>
 
-      <!-- <el-table-column
-        label="Keluar"
-        width="180">
-        <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.exitdate }}</span>
-        </template>
-      </el-table-column> -->
 
       <el-table-column
         label="Durasi"
@@ -108,8 +88,11 @@
         sortable
         >
         <template slot-scope="scope">
-          <i class="el-icon-time"></i>
-          <span style="margin-left: 10px">1:24:30</span>
+          <el-tag type="danger" effect="dark">
+            <i class="el-icon-time"></i>
+            <span style="margin-left: 10px">{{ scope.row.elapsed }}</span>
+          </el-tag>
+
         </template>
       </el-table-column>
 
@@ -127,32 +110,7 @@
         </template>
       </el-table-column>
 
-      <!-- <el-table-column label="Keluar" prop="exitdate" /> -->
-      <!-- <el-table-column
-        align="right"
-      > -->
-        <!-- <template slot="header" slot-scope="scope">
-          <el-input
-            v-model="search"
-            size="mini"
-            placeholder="Type to search"
-          />
-          <span hidden>{{ scope.row }}</span>
-        </template> -->
-        <!-- <template slot-scope="scope">
-          </el-steps>
-          <el-button
-            size="mini"
-            @click="handleEdit(scope.$index, scope.row)"
-          >Edit</el-button> -->
-          <!-- <el-button
-            v-if="scope.row.deptcode !== null "
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-          >Delete</el-button> -->
-        <!-- </template> -->
-      <!-- </el-table-column> -->
+
     </el-table>
     <br>
     <el-button type="success" icon="el-icon-plus" @click.native.prevent="handleNew()">Rekam Data Kunjungan</el-button>
@@ -166,7 +124,28 @@
                 <i class="el-icon-user"></i>
                 Nama
               </template>
-              <el-input v-model="dialogData.visitor.visitorname"></el-input>
+              <!-- <el-input v-model="dialogData.visitor.visitorname"></el-input> -->
+
+              <el-select
+                v-model="selectedVisitorID"
+                filterable
+                remote
+                reserve-keyword
+                allow-create
+                default-first-option
+                placeholder="Input / Pilih Nama Pengunjung"
+                :remote-method="remoteMethod"
+                :loading="visitorLoading"
+                style = "width:100%"
+              >
+                <el-option
+                  v-for="visitor in visitors"
+                  :key="visitor.id"
+                  :label="visitor.visitorname"
+                  :value="visitor.id">
+                </el-option>
+
+              </el-select>
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
@@ -210,7 +189,19 @@
                 <i class="el-icon-user"></i>
                 Department
               </template>
-              <el-input v-model="dialogData.department.deptname"></el-input>
+              <el-select v-model="param_department_id" placeholder="Select Department" style="width:100%">
+                <el-option
+                  v-for="dept in depts"
+                  :key="dept.id"
+                  :label="dept.deptname"
+                  :value="dept.id"
+                >
+                  <span style="float: left">{{ dept.deptname }}</span>
+                  <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ dept.deptcode }}</span> -->
+                </el-option>
+              </el-select>
+
+              <!-- <el-input v-model="dialogData.department.deptname"></el-input> -->
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
@@ -302,7 +293,9 @@
 </template>
 
 <script>
-import { getVisit, getListVisit, postVisit, getVisitImgURL } from '@/api/visit'
+import { getVisit, getListVisit, postVisit, getVisitImgURL, getElapsedTime } from '@/api/visit'
+import { getListVisitor, getVisitor } from '@/api/visitor'
+import { getListDept } from '@/api/department'
 import { WebCam } from "vue-web-cam";
 import { find, head } from "lodash";
 
@@ -324,16 +317,34 @@ export default {
         }
       },
       dialogVisible: false,
+      // loadingDialog: false,
       dialogPhotoVisible: false,
       activeMenu : "1",
       img: null,
       camera: null,
       deviceId: null,
-      devices: []
+      devices: [],
+      param_department_id: null,
+      depts: [],
+      intervalEvents: [],
+      visitors: [],
+      visitorLoading : false,
+      selectedVisitorID : null
     }
   },
   created() {
-    this.fetchData()
+    // this.fetchData()
+    // this.setTimers();
+  },
+  beforeDestroy() {
+    this.intervalEvents.map(intervalEvent => {
+      clearInterval(intervalEvent)
+    })
+  },
+  beforeMount() {
+    this.fetchData();
+    this.initForm();
+
   },
   computed: {
     device() {
@@ -357,45 +368,136 @@ export default {
         if (this.dialogPhotoVisible){
           this.$refs.webcam.start();
         }else{
-          console.log('stop');
+          // console.log('stop');
           this.$refs.webcam.stop();
         }
       }
+    },
+    selectedVisitorID: function(){
+
+      if (!this.selectedVisitorID){
+        this.dialogData.visitor = {
+          id : 0
+        }
+        this.dialogData.visitor_id = 0;
+        return;
+      }
+      // console.log(this.dialogData.visitor_id);
+      // console.log(this.selectedVisitorID);
+
+      //not number
+      if(isNaN(this.selectedVisitorID)){
+        this.dialogData.visitor = {
+          id : 0,
+          visitorname: this.selectedVisitorID
+        }
+        this.dialogData.visitor_id = 0;
+        return;
+      }
+
+      //fetch api
+      if (this.dialogData.visitor_id){
+        if (this.dialogData.visitor_id == this.selectedVisitorID){
+          return
+        }
+      }
+
+      if (this.selectedVisitorID){
+
+        getVisitor(this.selectedVisitorID).then(response => {
+          this.dialogData.visitor = response.data;
+          this.dialogData.visitor_id = this.selectedVisitorID;
+        });
+
+      }else{
+
+      }
     }
+
   },
   methods: {
+    initForm() {
+      getListDept().then(response => {
+        this.depts = response.data;
+      });
+      // console.log(this.depts);
+    },
     fetchData() {
       this.listLoading = true;
       this.img = null;
       getListVisit().then(response => {
         this.data = response.data;
-        this.listLoading = false
+        this.listLoading = false;
+        this.setTimers();
       })
     },
+    remoteMethod(query) {
+      if (query !== '') {
+        this.visitorloading = true;
+
+        getListVisitor(query).then(response => {
+          this.visitors = response.data;
+          this.visitorLoading = false;
+        })
+
+      } else {
+        this.visitors = [];
+      }
+    },
+    setTimers() {
+      this.data = this.data.map(rec => ({
+        ...rec,
+        elapsed: "",
+        startTimeAsDate: new Date(rec.entrydate)
+      }));
+
+      this.data.map(rec => {
+        // console.log('this');
+        const event = setInterval(() => {
+
+          rec.elapsed = getElapsedTime(rec.startTimeAsDate);
+          // rec.elapsed = new Date(currentDate.getTime() - rec.startTimeAsDate).toLocaleTimeString([], { hour12: false });
+        }, 1000);
+
+        this.intervalEvents.push(event);
+      });
+    },
     showDialog(id) {
+      // console.log(new Date());
       this.img = null;
+      // this.loadingDialog = true;
+      this.selectedVisitorID = null;
+      this.$set(this, 'selectedVisitorID', null);
+
       getVisit(id).then(response => {
         this.dialogData = response.data;
-        console.log(this.dialogData);
+        this.visitors = [];
+        // console.log(this.dialogData);
         if (id === 0) {
-          this.dialogData = { caption: '' }
+          this.param_department_id = null;
+          this.dialogData = {
+            caption: 'Tambah Data Kunjungan',
+            visitor: {},
+            department: {}
+          };
         } else {
           this.dialogData.caption = 'Edit Data Kunjungan';
+          if (this.dialogData.department){
+              this.param_department_id = this.dialogData.department.id
+          }
+          this.visitors.push(this.dialogData.visitor);
+          // this.$set(this, 'selectedVisitorID', this.dialogData.visitor_id);
+          // console.log(this.selectedVisitorID);
+          this.selectedVisitorID = this.dialogData.visitor_id;
         }
 
         this.img = getVisitImgURL(this.dialogData.imgpath1);
-        console.log(this.img);
-
+        // console.log(this.img);
         this.dialogVisible = true;
+
+        // this.loadingDialog = false;
       })
 
-      console.log(this.image);
-
-      // getVisitImage(id).then(response => {
-      //   console.log('visit image');
-      //   console.log(response.data);
-      //   // this.img = response.data;
-      // })
     },
     showDialogPhoto(){
       this.dialogPhotoVisible = true;
@@ -409,10 +511,22 @@ export default {
       // this.$router.push({ path: '/master/update_department' })
     },
     handleSelect(key, keyPath) {
-      console.log(key, keyPath);
+      // console.log(key, keyPath);
     },
     saveData() {
       var vm = this;
+
+      // this.dialogData.department = {
+      //   id : this.param_department_id
+      // };
+      this.dialogData.dept_id = this.param_department_id;
+
+
+      // if (!this.dialogData.entrydate)
+      // this.dialogData.entrydate =  null; // new Date();
+      //
+      // this.dialogData.entrydate.setMilliseconds(0);
+      // console.log(  this.dialogData.entrydate );
       postVisit(this.dialogData, this.img).then(response => {
         vm.$message({
           type: 'success',
@@ -427,10 +541,10 @@ export default {
       this.dialogPhotoVisible = false;
     },
     onStarted(stream) {
-      console.log("On Started Event", stream);
+      // console.log("On Started Event", stream);
     },
     onStopped(stream) {
-      console.log("On Stopped Event", stream);
+      // console.log("On Stopped Event", stream);
     },
     onStop() {
       this.$refs.webcam.stop();
@@ -439,7 +553,7 @@ export default {
       this.$refs.webcam.start();
     },
     onError(error) {
-      console.log("On Error Event", error);
+      // console.log("On Error Event", error);
     },
     onCameras(cameras) {
       this.devices = cameras;
@@ -450,12 +564,12 @@ export default {
       //   delete item.num;//deleting the num from the object
       // });
       // console.log(this.devices);
-      console.log("On Cameras Event", this.devices);
+      // console.log("On Cameras Event", this.devices);
     },
     onCameraChange(deviceId) {
       this.deviceId = deviceId;
       this.camera = deviceId;
-      console.log("On Camera Change Event", deviceId);
+      // console.log("On Camera Change Event", deviceId);
     }
   }
 }
@@ -482,5 +596,7 @@ export default {
 <style>
    .el-descriptions-item__cell.el-descriptions-item__label.is-bordered-label {
      width: 120px;
+     color: #909399;
+     background: #fafafa;
    }
 </style>
