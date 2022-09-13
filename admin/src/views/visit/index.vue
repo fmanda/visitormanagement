@@ -4,36 +4,23 @@
       :default-active="activeMenu"
       class="el-menu-demo"
       mode="horizontal"
-      @select="handleSelect"
       background-color="#545c64"
       text-color="#fff"
-      active-text-color="#ffd04b">
+      active-text-color="#ffd04b"
+      @select="handleSelect"
+    >
       <el-menu-item index="1">Sedang Berlangsung</el-menu-item>
       <el-menu-item index="2">Semua Kunjungan</el-menu-item>
-
     </el-menu>
-
     <br/>
-
-    <!-- <el-table
-      :v-loading="listLoading"
-      :data="data.filter(data => !search || data.deptname.toLowerCase().includes(search.toLowerCase()))"
-      style="width: 100%"
-    > -->
-
     <el-table
       :v-loading="listLoading"
       :data="data"
       style="width: 100%"
     >
-
-
       <el-table-column type="expand">
         <template slot-scope="props">
-
-
           <el-descriptions class="margin-top" style="margin-left: 50px;" title="" :column="1" size="" border>
-
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-mobile-phone"></i>
@@ -63,7 +50,6 @@
               {{props.row.reason}}
             </el-descriptions-item>
           </el-descriptions>
-
         </template>
       </el-table-column>
       <el-table-column label="Pengunjung" prop="visitorname" sortable/>
@@ -81,7 +67,6 @@
         </template>
       </el-table-column>
 
-
       <el-table-column
         label="Durasi"
         width="120"
@@ -92,7 +77,6 @@
             <i class="el-icon-time"></i>
             <span style="margin-left: 10px">{{ scope.row.elapsed }}</span>
           </el-tag>
-
         </template>
       </el-table-column>
 
@@ -110,7 +94,6 @@
         </template>
       </el-table-column>
 
-
     </el-table>
     <br>
     <el-button type="success" icon="el-icon-plus" @click.native.prevent="handleNew()">Rekam Data Kunjungan</el-button>
@@ -125,7 +108,6 @@
                 Nama
               </template>
               <!-- <el-input v-model="dialogData.visitor.visitorname"></el-input> -->
-
               <el-select
                 v-model="selectedVisitorID"
                 filterable
@@ -134,7 +116,7 @@
                 allow-create
                 default-first-option
                 placeholder="Input / Pilih Nama Pengunjung"
-                :remote-method="remoteMethod"
+                :remote-method="searchVisitor"
                 :loading="visitorLoading"
                 style = "width:100%"
               >
@@ -175,7 +157,7 @@
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-mobile-phone"></i>
-                No. Identitas
+                Identitas
               </template>
               <el-input v-model="dialogData.visitor.idcardno"></el-input>
             </el-descriptions-item>
@@ -208,7 +190,29 @@
                 <i class="el-icon-office-building"></i>
                 Karyawan
               </template>
-              <el-input v-model="dialogData.person_to_meet"></el-input>
+
+              <el-select
+                v-model="dialogData.person_to_meet"
+                filterable
+                remote
+                reserve-keyword
+                allow-create
+                default-first-option
+                placeholder="Input / Pilih Karyawan"
+                :remote-method="searchEmployee"
+                :loading="employeeLoading"
+                style = "width:100%"
+              >
+                <el-option
+                  v-for="employee in listemployee"
+                  :key="employee.employeename"
+                  :label="employee.employeename"
+                  :value="employee.employeename">
+                </el-option>
+
+              </el-select>
+
+              <!-- <el-input v-model="dialogData.person_to_meet"></el-input> -->
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
@@ -225,7 +229,15 @@
               </template>
               <el-skeleton style="width: 140px">
                 <template slot="template">
-                  <el-image style="width: 180px; height: 131px;" :src="img" >
+                  <el-image style="width: 180px; height: 131px;" :src="img1" >
+                      <el-skeleton-item slot="error"  variant="image" style="width: 100%; height:100%" />
+                  </el-image>
+                </template>
+              </el-skeleton>
+
+              <el-skeleton style="width: 140px">
+                <template slot="template">
+                  <el-image style="width: 180px; height: 131px;" :src="img2" >
                       <el-skeleton-item slot="error"  variant="image" style="width: 100%; height:100%" />
                   </el-image>
                 </template>
@@ -235,8 +247,6 @@
           </el-descriptions>
         </el-col>
       </el-row>
-
-
       <span slot="footer" class="dialog-footer">
         <el-button style ="float: left;" @click.native.prevent="showDialogPhoto()">Ambil Foto</el-button>
         <el-button type="primary" @click.native.prevent="saveData()">Simpan</el-button>
@@ -246,29 +256,15 @@
 
     <el-dialog title="Foto Pengunjung" :visible.sync="dialogPhotoVisible" width="800px">
       <code v-if="device">{{ device.label }}</code>
-        <web-cam ref="webcam"
-                 :device-id="deviceId"
-                 width="100%"
-                 @started="onStarted"
-                 @stopped="onStopped"
-                 @error="onError"
-                 @cameras="onCameras"
-                 @camera-change="onCameraChange" />
-
-          <!-- <button type="button"
-                  class="btn btn-primary"
-                  @click="onCapture">Capture Photo</button>
-          <button type="button"
-                  class="btn btn-danger"
-                  @click="onStop">Stop Camera</button>
-          <button type="button"
-                  class="btn btn-success"
-                  @click="onStart">Start Camera</button> -->
-
-      <!-- <figure class="figure">
-        <img :src="img" class="img-responsive" >
-      </figure> -->
-
+        <web-cam
+          ref="webcam"
+          :device-id="deviceId"
+          width="100%"
+          @started="onStarted"
+          @stopped="onStopped"
+          @error="onError"
+          @cameras="onCameras"
+          @camera-change="onCameraChange" />
       <span slot="footer" class="dialog-footer">
         <el-select v-model="camera" style ="float: left;">
           <el-option value="null">-- Select Device --</el-option>
@@ -285,19 +281,15 @@
         <!-- <el-button type="primary" style ="right: center;" @click.native.prevent="onStart">Start Camera</el-button> -->
       </span>
     </el-dialog>
-
-
   </div>
-
-
 </template>
 
 <script>
 import { getVisit, getListVisit, postVisit, getVisitImgURL, getElapsedTime } from '@/api/visit'
 import { getListVisitor, getVisitor } from '@/api/visitor'
-import { getListDept } from '@/api/department'
-import { WebCam } from "vue-web-cam";
-import { find, head } from "lodash";
+import { getListDept, getListEmployee } from '@/api/department'
+import { WebCam } from 'vue-web-cam';
+import { find, head } from 'lodash';
 
 export default {
   components: {
@@ -312,14 +304,13 @@ export default {
         caption: '',
         visitor: {
         },
-        department : {
-
+        department: {
         }
       },
       dialogVisible: false,
       // loadingDialog: false,
       dialogPhotoVisible: false,
-      activeMenu : "1",
+      activeMenu: '1',
       img: null,
       camera: null,
       deviceId: null,
@@ -328,8 +319,10 @@ export default {
       depts: [],
       intervalEvents: [],
       visitors: [],
-      visitorLoading : false,
-      selectedVisitorID : null
+      visitorLoading: false,
+      listemployee: [],
+      employeeLoading: false,
+      selectedVisitorID: null
     }
   },
   created() {
@@ -341,14 +334,9 @@ export default {
       clearInterval(intervalEvent)
     })
   },
-  beforeMount() {
-    this.fetchData();
-    this.initForm();
-
-  },
   computed: {
     device() {
-      return find(this.devices, n => n.deviceId == this.deviceId);
+      return find(this.devices, n => n.deviceId === this.deviceId);
     }
   },
   watch: {
@@ -357,27 +345,26 @@ export default {
     },
     devices: function() {
       // Once we have a list select the first one
-      let first = head(this.devices);
+      const first = head(this.devices);
       if (first) {
         this.camera = first.deviceId;
         this.deviceId = first.deviceId;
       }
     },
-    dialogPhotoVisible: function(){
-      if (this.$refs.webcam){
-        if (this.dialogPhotoVisible){
+    dialogPhotoVisible: function() {
+      if (this.$refs.webcam) {
+        if (this.dialogPhotoVisible) {
           this.$refs.webcam.start();
-        }else{
+        } else {
           // console.log('stop');
-          this.$refs.webcam.stop();
+          // this.$refs.webcam.stop();
         }
       }
     },
-    selectedVisitorID: function(){
-
-      if (!this.selectedVisitorID){
+    selectedVisitorID: function() {
+      if (!this.selectedVisitorID) {
         this.dialogData.visitor = {
-          id : 0
+          id: 0
         }
         this.dialogData.visitor_id = 0;
         return;
@@ -385,35 +372,35 @@ export default {
       // console.log(this.dialogData.visitor_id);
       // console.log(this.selectedVisitorID);
 
-      //not number
-      if(isNaN(this.selectedVisitorID)){
+      // not number
+      if (isNaN(this.selectedVisitorID)) {
         this.dialogData.visitor = {
-          id : 0,
+          id: 0,
           visitorname: this.selectedVisitorID
         }
         this.dialogData.visitor_id = 0;
         return;
       }
 
-      //fetch api
-      if (this.dialogData.visitor_id){
-        if (this.dialogData.visitor_id == this.selectedVisitorID){
+      // fetch api
+      if (this.dialogData.visitor_id) {
+        if (this.dialogData.visitor_id === this.selectedVisitorID) {
           return
         }
       }
 
-      if (this.selectedVisitorID){
-
+      if (this.selectedVisitorID) {
         getVisitor(this.selectedVisitorID).then(response => {
           this.dialogData.visitor = response.data;
           this.dialogData.visitor_id = this.selectedVisitorID;
         });
-
-      }else{
-
       }
     }
 
+  },
+  beforeMount() {
+    this.fetchData();
+    this.initForm();
   },
   methods: {
     initForm() {
@@ -431,7 +418,7 @@ export default {
         this.setTimers();
       })
     },
-    remoteMethod(query) {
+    searchVisitor(query) {
       if (query !== '') {
         this.visitorloading = true;
 
@@ -439,7 +426,17 @@ export default {
           this.visitors = response.data;
           this.visitorLoading = false;
         })
-
+      } else {
+        this.visitors = [];
+      }
+    },
+    searchEmployee(query) {
+      if (query !== '') {
+        this.employeeLoading = true;
+        getListEmployee(this.param_department_id, query).then(response => {
+          this.listemployee = response.data;
+          this.employeeLoading = false;
+        })
       } else {
         this.visitors = [];
       }
@@ -447,14 +444,13 @@ export default {
     setTimers() {
       this.data = this.data.map(rec => ({
         ...rec,
-        elapsed: "",
+        elapsed: '',
         startTimeAsDate: new Date(rec.entrydate)
       }));
 
       this.data.map(rec => {
         // console.log('this');
         const event = setInterval(() => {
-
           rec.elapsed = getElapsedTime(rec.startTimeAsDate);
           // rec.elapsed = new Date(currentDate.getTime() - rec.startTimeAsDate).toLocaleTimeString([], { hour12: false });
         }, 1000);
@@ -472,6 +468,7 @@ export default {
       getVisit(id).then(response => {
         this.dialogData = response.data;
         this.visitors = [];
+        this.listemployee = [];
         // console.log(this.dialogData);
         if (id === 0) {
           this.param_department_id = null;
@@ -482,8 +479,8 @@ export default {
           };
         } else {
           this.dialogData.caption = 'Edit Data Kunjungan';
-          if (this.dialogData.department){
-              this.param_department_id = this.dialogData.department.id
+          if (this.dialogData.department) {
+            this.param_department_id = this.dialogData.department.id
           }
           this.visitors.push(this.dialogData.visitor);
           // this.$set(this, 'selectedVisitorID', this.dialogData.visitor_id);
@@ -491,15 +488,14 @@ export default {
           this.selectedVisitorID = this.dialogData.visitor_id;
         }
 
-        this.img = getVisitImgURL(this.dialogData.imgpath1);
+        this.img1 = getVisitImgURL(this.dialogData.imgpath1);
+        this.img2 = getVisitImgURL(this.dialogData.imgpath2);
         // console.log(this.img);
         this.dialogVisible = true;
-
         // this.loadingDialog = false;
       })
-
     },
-    showDialogPhoto(){
+    showDialogPhoto() {
       this.dialogPhotoVisible = true;
     },
     handleEdit(index, row) {
@@ -520,8 +516,6 @@ export default {
       //   id : this.param_department_id
       // };
       this.dialogData.dept_id = this.param_department_id;
-
-
       // if (!this.dialogData.entrydate)
       // this.dialogData.entrydate =  null; // new Date();
       //
@@ -553,11 +547,10 @@ export default {
       this.$refs.webcam.start();
     },
     onError(error) {
-      // console.log("On Error Event", error);
+      console.log('On Error Event', error);
     },
     onCameras(cameras) {
       this.devices = cameras;
-
       // //empty item__label
       // this.devices.forEach(function(item) {
       //   item.label = 'Camera 1';//setting the value

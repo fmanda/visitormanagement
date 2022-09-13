@@ -4,7 +4,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Slim\Exception\HttpNotFoundException;
 
-use Tuupola\Middleware\CorsMiddleware;
+// use Tuupola\Middleware\CorsMiddleware;
 
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -12,60 +12,58 @@ $config = parse_ini_file("../src/config.ini");
 
 $app = AppFactory::create();
 
+$app->addBodyParsingMiddleware();
+$app->addRoutingMiddleware();
+
 $app->setBasePath('/public');
 
-$app->add(new Tuupola\Middleware\CorsMiddleware([
-    "origin" => ["*"],
-    "methods" => ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    "headers.allow" => ["Authorization", "If-Match", "If-Unmodified-Since"],
-    "headers.expose" => [],
-    "credentials" => true,
-    "cache" => 0,
-]));
-
+// build https
 // $app->add(new Tuupola\Middleware\CorsMiddleware([
 //     "origin" => ["*"],
 //     "methods" => ["GET", "POST", "PUT", "PATCH", "DELETE"],
 //     "headers.allow" => ["Authorization", "If-Match", "If-Unmodified-Since"],
-//     "headers.expose" => ["Etag"],
+//     "headers.expose" => [],
 //     "credentials" => true,
-//     "cache" => 86400
+//     "cache" => 0,
 // ]));
 
 
-$app->add(new Tuupola\Middleware\JwtAuthentication([
-    "regexp" => "/(.*)/", //default format Bearer <token>
-    "secret" => $config["secret"],
-    "algorithm" => ["HS256"],
-    "rules" => [
-        new Tuupola\Middleware\JwtAuthentication\RequestPathRule([
-            "ignore" => [
-              $app->getBasePath() . "/check",
-              $app->getBasePath() . "/login",
-              $app->getBasePath() . "/kpidept_upload_ml",
-              $app->getBasePath() . "/kpidept_upload_kpi",
-              $app->getBasePath() . "/downloadfile"
-            ]
-        ]),
-        new Tuupola\Middleware\JwtAuthentication\RequestMethodRule([
-            "ignore" => ["OPTIONS"]
-        ])
-    ]
-]));
+
+// $app->add(new Tuupola\Middleware\JwtAuthentication([
+//     "regexp" => "/(.*)/", //default format Bearer <token>
+//     "secret" => $config["secret"],
+//     "algorithm" => ["HS256"],
+//     "rules" => [
+//         new Tuupola\Middleware\JwtAuthentication\RequestPathRule([
+//             "ignore" => [
+//               $app->getBasePath() . "/check",
+//               $app->getBasePath() . "/login",
+//               $app->getBasePath() . "/kpidept_upload_ml",
+//               $app->getBasePath() . "/kpidept_upload_kpi",
+//               $app->getBasePath() . "/downloadfile"
+//             ]
+//         ]),
+//         new Tuupola\Middleware\JwtAuthentication\RequestMethodRule([
+//             "ignore" => ["OPTIONS"]
+//         ])
+//     ]
+// ]));
 
 
 $app->options('/{routes:.+}', function ($request, $response, $args) {
     return $response;
 });
 
-// $app->add(function ($request, $handler) {
-//     $response = $handler->handle($request);
-//     return $response
-//             ->withHeader('Access-Control-Allow-Origin', '*')
-//             ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-//             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
-//             // ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-// });
+// dev
+$app->add(function ($request, $handler) {
+    $response = $handler->handle($request);
+    return $response
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH')
+            ->withHeader("Access-Control-Allow-Credentials", "true");
+            // ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+});
 
 
 $app->get('/check', function (Request $request, Response $response, $args) {

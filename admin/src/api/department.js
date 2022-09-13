@@ -28,3 +28,10 @@ export function postDepartment(data) {
     data
   })
 }
+
+export function getListEmployee(deptname, employeename) {
+  return request({
+    url: 'employee/' + deptname + '/' + employeename ,
+    method: 'get'
+  })
+}

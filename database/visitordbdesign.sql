@@ -44,7 +44,8 @@ create table testdetail(
 create table visitimage(
 	visit_id int,
 	img1 BYTEA,
-	img2 BYTEA
+	img2 BYTEA,
+	imgpath1 varchar(300)
 )
 
 # prepare

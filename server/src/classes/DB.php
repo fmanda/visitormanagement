@@ -9,7 +9,7 @@
 			$port = $config['port'];
 			$dbpassword = $config['password'];
 
-			$connect_str = "mysql:host=$dbhost;dbname=$dbname";
+			// $connect_str = "mysql:host=$dbhost;dbname=$dbname";
 
 			$conStr = sprintf("pgsql:host=%s;port=%d;dbname=%s;user=%s;password=%s",
                 $dbhost,
@@ -20,6 +20,7 @@
 
 			$conn = new \PDO($conStr);
 			$conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
 
 			//$conn = new PDO($mysql_connect_str, $dbuser, $dbpassword);
 			//$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

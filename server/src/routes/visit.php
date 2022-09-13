@@ -76,19 +76,19 @@ $app->get('/visitimage/{id}', function ($request, $response, $args) {
 $app->get('/visitimageurl/{id}', function ($request, $response, $args) {
 	try{
     $id = $request->getAttribute('id');
-    $str = "SELECT imgpath1 FROM visitimage where visit_id = " . $id  . " and imgpath1 is not null order by imgpath1 desc";
+    $str = "SELECT imgpath1, imgpath2 FROM visitimage where visit_id = " . $id . "  order by imgpath1 desc";
     $obj =  DB::openQuery($str);
 
     // if($obj[0] == null) $response->withHeader("Content-Type", "text/html");
 
-    $url = $obj[0]->imgpath1;
+    $json = json_encode($obj[0]);
 
     //PR bikinkan config
     // $config = parse_ini_file("../src/config.ini");
   	// $directory =  $config["upload_directory"];
     // $directory = $directory . DIRECTORY_SEPARATOR; //. $year;
 
-    $response->getBody()->write($url);
+    $response->getBody()->write($json);
 
     return $response->withHeader("Content-Type", "text/html");
 		// return $response->withHeader('Content-Type', 'image/jpeg');
@@ -105,7 +105,8 @@ $app->get('/visitimageurl/{id}', function ($request, $response, $args) {
 
 
 $app->post('/visit', function ($request, $response) {
-  $json = $request->getParam('data');
+  $json = $request->getParsedBody()['data'];
+  var_dump($json);
 	$obj = json_decode($json);
 
   // var_dump($obj);
@@ -126,6 +127,15 @@ $app->post('/visit', function ($request, $response) {
 
 });
 
+function executeUploadFile($request, $id){
+  // $uploadedFile = $request->getParsedBodyParam('img1');
+  $uploadedFile = $request->getParsedBody()['img1'];
+  uploadFromData($uploadedFile, $id, 1 );
+
+  $uploadedFile = $request->getParsedBody()['img2'];
+  uploadFromData($uploadedFile, $id, 2 );
+}
+
 
 function moveUploadedFile($directory, UploadedFileInterface $uploadedFile)
 {
@@ -135,11 +145,8 @@ function moveUploadedFile($directory, UploadedFileInterface $uploadedFile)
 }
 
 
-function uploadFromData($data, $id) {
-
-    //PR overwrite filename
+function uploadFromData($data, $id,  $imgidx) {
     $ext = null;
-
     if(strpos($data, 'data:image/jpeg;base64,') === 0) {
         $data = str_replace('data:image/jpeg;base64,', '', $data);
         $ext = '.jpg';
@@ -154,11 +161,8 @@ function uploadFromData($data, $id) {
         $ext = '.gif';
     }
 
-    //debugging purpose
     $config = parse_ini_file("../src/config.ini");
   	$directory =  $config["upload_directory"];
-
-  	// $year = date("Y");;
 
   	$directory = $directory . DIRECTORY_SEPARATOR; //. $year;
 
@@ -168,56 +172,30 @@ function uploadFromData($data, $id) {
 
     if($ext != null) {
         $image = base64_decode($data);
-
-        $filename = date('YmdHis') . '.' . createToken() . $ext;
-
+        // $filename = date('YmdHis') . '.' . createToken() . $ext;
+        $filename = date('YmdHis') . '_' .$id.toString() .'_'.  $imgidx.toString()  . $ext;
         if(file_put_contents($directory . DIRECTORY_SEPARATOR . $filename, $image) !== FALSE) {
           $db = new DB();
           $db = $db->connect();
           $db->beginTransaction();
           try {
-            // $sql = "INSERT INTO visitimage (visit_id, img1) VALUES(:visit_id, decode(:img1,'base64') )";
-            $sql = "INSERT INTO visitimage (visit_id, imgpath1) VALUES(:visit_id, :imgpath1 )";
-
-
+            $sql = 'INSERT INTO visitimage (visit_id, imgpath1) VALUES(:visit_id, :imgpath ' . $imgidx.toString() . ' )';
             $stmt = $db->prepare($sql);
-
-
             $stmt->execute([
                 ':visit_id' => $id,
-                ':imgpath1' => $filename
+                ':imgpath' . $imgidx.toString() => $filename
             ]);
-
             $db->commit();
           } catch (Exception $e) {
             $db->rollback();
             throw $e;
           }
-
           return $filename;
         }
     }
-
     return null;
 }
 
 function createToken() {
     return bin2hex(openssl_random_pseudo_bytes(16));
-}
-
-function executeUploadFile($request, $id){
-	// // $config = parse_ini_file("../src/config.ini");
-	// // $directory =  $config["upload_directory"];
-  //
-	// $year = date("Y");;
-  //
-	// // $directory = $directory . DIRECTORY_SEPARATOR . $year;
-  // //
-	// // if (!file_exists($directory)) {
-	// // 	mkdir($directory, 0777, true);
-	// // }
-
-  $uploadedFile = $request->getParam('img1');
-  uploadFromData($uploadedFile, $id );
-
 }

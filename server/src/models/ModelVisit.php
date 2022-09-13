@@ -24,9 +24,9 @@
 		}
 
 		public static function retrieveList($filter=''){
-			$sql = 'select a.*, b.visitorname, b.company, b.address, b.idcardno, b.phone , c.deptname from visit a
+			$sql = 'select a.*, b.visitorname, b.company, b.address, b.idcardno, b.phone , c."name" as deptname from visit a
 							left join visitor b on a.visitor_id = b.id
-							left join department c on a.dept_id = c.id
+							left join jsection c on a.dept_id = c.section_id
 							';
 			if ($filter<>''){
 				$sql = $sql .' and '. $filter;
