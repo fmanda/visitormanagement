@@ -1,5 +1,11 @@
 <template>
   <div class="app-container">
+    <el-alert v-if="errormsg != '' "
+      :title="errormsg"
+      type="error"
+      show-icon>
+    </el-alert>
+
     <el-menu
       :default-active="activeMenu"
       class="el-menu-demo"
@@ -13,6 +19,21 @@
       <el-menu-item index="2">Semua Kunjungan</el-menu-item>
     </el-menu>
     <br/>
+
+    <el-date-picker
+      v-if= "activeMenu === '2'"
+      v-model="filterperiod"
+      type="daterange"
+      align="right"
+      unlink-panels
+      range-separator="To"
+      start-placeholder="Start date"
+      end-placeholder="End date"
+      :picker-options="pickerOptions"
+      onchange="handleChangePeriod"
+      >
+    </el-date-picker>
+
     <el-table
       :v-loading="listLoading"
       :data="data"
@@ -87,7 +108,7 @@
         <template slot-scope="scope">
           <el-button-group>
             <el-button plain icon="el-icon-edit-outline" size="small" @click="handleEdit(scope.$index, scope.row)"></el-button>
-            <el-button plain size="small">Keluar</el-button>
+            <el-button plain size="small" @click="handleEndVisit(scope.row)" >Keluar</el-button>
           </el-button-group>
           <!-- <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
           <el-button type="danger" round size="mini">Keluar</el-button>       -->
@@ -98,9 +119,11 @@
     <br>
     <el-button type="success" icon="el-icon-plus" @click.native.prevent="handleNew()">Rekam Data Kunjungan</el-button>
 
-    <el-dialog :title="dialogData.caption" :visible.sync="dialogVisible" width="800px">
+    <el-dialog :title="dialogData.caption" :visible.sync="dialogVisible" width="900px" :before-close="handleCloseDlg"
+      class="inputdialog" top="5vh"
+    >
       <el-row>
-        <el-col :span="12">
+        <el-col :span="11" >
           <el-descriptions class="margin-top" title="" :column="1" border>
             <el-descriptions-item>
               <template slot="label">
@@ -164,14 +187,14 @@
           </el-descriptions>
         </el-col>
 
-        <el-col :span="12">
+        <el-col :span="13" style="padding-left:10px">
           <el-descriptions class="margin-top" title="" :column="1" border>
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-user"></i>
                 Department
               </template>
-              <el-select v-model="param_department_id" placeholder="Select Department" style="width:100%">
+              <el-select v-model="param_department_id" placeholder="Select Department" style="width:85%">
                 <el-option
                   v-for="dept in depts"
                   :key="dept.id"
@@ -201,7 +224,7 @@
                 placeholder="Input / Pilih Karyawan"
                 :remote-method="searchEmployee"
                 :loading="employeeLoading"
-                style = "width:100%"
+                style = "width:85%"
               >
                 <el-option
                   v-for="employee in listemployee"
@@ -227,39 +250,50 @@
                 <i class="el-icon-mobile-phone"></i>
                 Foto
               </template>
-              <el-skeleton style="width: 140px">
-                <template slot="template">
-                  <el-image style="width: 180px; height: 131px;" :src="img1" >
-                      <el-skeleton-item slot="error"  variant="image" style="width: 100%; height:100%" />
-                  </el-image>
-                </template>
-              </el-skeleton>
+                <el-row>
+                  <el-col :span="12" style = "padding-right:10px">
+                    <el-skeleton style="width: 100%">
+                      <template slot="template">
+                        <el-image style="width: 100%; height: 131px;" :src="img1" >
+                            <el-skeleton-item slot="error"  variant="image" style="width: 100%; height:100%" />
+                        </el-image>
+                        <!-- <el-button type="text" size="mini" style="width: 100%;" @click.native.prevent="showDialogPhoto()">Foto Pengunjung</el-button> -->
+                      </template>
 
-              <el-skeleton style="width: 140px">
-                <template slot="template">
-                  <el-image style="width: 180px; height: 131px;" :src="img2" >
-                      <el-skeleton-item slot="error"  variant="image" style="width: 100%; height:100%" />
-                  </el-image>
-                </template>
-              </el-skeleton>
-            </el-descriptions-item>
+                    </el-skeleton>
+                  </el-col>
+                  <el-col :span="12" style = "padding-right:10px">
+                    <el-skeleton style="width: 100%">
+                      <template slot="template">
+                        <el-image style="width: 100%; height: 131px;" :src="img2" >
+                            <el-skeleton-item slot="error"  variant="image" style="width: 100%; height:100%" />
+                        </el-image>
+                      </template>
+                    </el-skeleton>
+                  </el-col>
+                </el-row>
 
+              </el-descriptions-item>
           </el-descriptions>
         </el-col>
       </el-row>
       <span slot="footer" class="dialog-footer">
-        <el-button style ="float: left;" @click.native.prevent="showDialogPhoto()">Ambil Foto</el-button>
+        <el-button style ="float: left;" @click.native.prevent="showDialogPhoto(1)">Foto Pengunjung</el-button>
+        <el-button style ="float: left;" @click.native.prevent="showDialogPhoto(2)">Foto Identitas</el-button>
         <el-button type="primary" @click.native.prevent="saveData()">Simpan</el-button>
         <el-button type="danger" @click="dialogVisible = false">Batal</el-button>
       </span>
     </el-dialog>
 
-    <el-dialog title="Foto Pengunjung" :visible.sync="dialogPhotoVisible" width="800px">
+    <el-dialog title="Foto Pengunjung" :visible.sync="dialogPhotoVisible" width="800px" height="300px"
+      top="5vh" class="inputdialog"
+    >
       <code v-if="device">{{ device.label }}</code>
         <web-cam
           ref="webcam"
           :device-id="deviceId"
           width="100%"
+          height="100%"
           @started="onStarted"
           @stopped="onStopped"
           @error="onError"
@@ -285,7 +319,7 @@
 </template>
 
 <script>
-import { getVisit, getListVisit, postVisit, getVisitImgURL, getElapsedTime } from '@/api/visit'
+import { getVisit, getListVisit, postVisit, getVisitImgURL, getElapsedTime, endVisit, getOngoingVisit } from '@/api/visit'
 import { getListVisitor, getVisitor } from '@/api/visitor'
 import { getListDept, getListEmployee } from '@/api/department'
 import { WebCam } from 'vue-web-cam';
@@ -300,6 +334,7 @@ export default {
       data: [],
       listLoading: true,
       search: '',
+      errormsg: '',
       dialogData: {
         caption: '',
         visitor: {
@@ -310,8 +345,10 @@ export default {
       dialogVisible: false,
       // loadingDialog: false,
       dialogPhotoVisible: false,
+      dialogPhotoActiveIdx: 0,
       activeMenu: '1',
-      img: null,
+      img1: null,
+      img2: null,
       camera: null,
       deviceId: null,
       devices: [],
@@ -322,7 +359,35 @@ export default {
       visitorLoading: false,
       listemployee: [],
       employeeLoading: false,
-      selectedVisitorID: null
+      selectedVisitorID: null,
+      filterperiod: null,
+      pickerOptions: {
+        shortcuts: [{
+          text: 'Seminggu Terakhir',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: 'Sebulan Terakhir',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '3 Bulan Terakhir',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+            picker.$emit('pick', [start, end]);
+          }
+        }]
+      }
     }
   },
   created() {
@@ -411,12 +476,17 @@ export default {
     },
     fetchData() {
       this.listLoading = true;
-      this.img = null;
-      getListVisit().then(response => {
-        this.data = response.data;
-        this.listLoading = false;
-        this.setTimers();
-      })
+      this.img1 = null;
+      this.img2 = null;
+
+      if (this.activeMenu == '1'){
+        getOngoingVisit().then(response => {
+          this.data = response.data;
+          this.listLoading = false;
+          this.setTimers();
+        })
+      }
+
     },
     searchVisitor(query) {
       if (query !== '') {
@@ -460,7 +530,8 @@ export default {
     },
     showDialog(id) {
       // console.log(new Date());
-      this.img = null;
+      this.img1 = null;
+      this.img2 = null;
       // this.loadingDialog = true;
       this.selectedVisitorID = null;
       this.$set(this, 'selectedVisitorID', null);
@@ -489,14 +560,24 @@ export default {
         }
 
         this.img1 = getVisitImgURL(this.dialogData.imgpath1);
+
         this.img2 = getVisitImgURL(this.dialogData.imgpath2);
+
         // console.log(this.img);
         this.dialogVisible = true;
         // this.loadingDialog = false;
       })
     },
-    showDialogPhoto() {
+    showDialogPhoto(idx) {
+      this.dialogPhotoActiveIdx = idx;
       this.dialogPhotoVisible = true;
+    },
+    handleCloseDlg(done) {
+      this.$confirm('Anda yakin menutup form ini?')
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
     },
     handleEdit(index, row) {
       this.showDialog(row.id);
@@ -508,6 +589,23 @@ export default {
     },
     handleSelect(key, keyPath) {
       // console.log(key, keyPath);
+    },
+    getVisitorNameFromAR(id){
+      for (var v in this.data){
+        if (v.id === id){
+          return v;
+        }
+      }
+      return null
+    },
+    handleEndVisit(row){
+      var vm = this;
+
+      this.$confirm('Anda yakin mengkhiri kunjungan atas tamu : ' + row.visitorname ).then(_ => {
+        endVisit(row.id).then(response => {
+          vm.fetchData();
+        })
+      })
     },
     saveData() {
       var vm = this;
@@ -521,7 +619,7 @@ export default {
       //
       // this.dialogData.entrydate.setMilliseconds(0);
       // console.log(  this.dialogData.entrydate );
-      postVisit(this.dialogData, this.img).then(response => {
+      postVisit(this.dialogData, this.img1, this.img2).then(response => {
         vm.$message({
           type: 'success',
           message: 'Data Berhasil Disimpan'
@@ -531,7 +629,11 @@ export default {
       })
     },
     onCapture() {
-      this.img = this.$refs.webcam.capture();
+      if (this.dialogPhotoActiveIdx == 1){
+        this.img1 = this.$refs.webcam.capture();
+      }else{
+        this.img2 = this.$refs.webcam.capture();
+      }
       this.dialogPhotoVisible = false;
     },
     onStarted(stream) {
@@ -563,6 +665,9 @@ export default {
       this.deviceId = deviceId;
       this.camera = deviceId;
       // console.log("On Camera Change Event", deviceId);
+    },
+    handleChangePeriod(){
+      console.log(this.filterperiod);
     }
   }
 }
@@ -591,5 +696,13 @@ export default {
      width: 120px;
      color: #909399;
      background: #fafafa;
+   }
+
+   .inputdialog .el-dialog__header{
+     display: none;
+   }
+
+   .inputdialog .el_dialog{
+     margin-top: 5vh;
    }
 </style>

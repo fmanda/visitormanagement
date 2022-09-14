@@ -34,6 +34,21 @@ $app->get('/visit', function ($request, $response) {
 	}
 });
 
+$app->get('/ongoingvisit', function ($request, $response) {
+  try{
+    $data = ModelVisit::retrieveList('exitdate is null');
+    $json = json_encode($data);
+    $response->getBody()->write($json);
+
+		return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+	}catch(Exception $e){
+    $msg = $e->getMessage();
+    $response->getBody()->write($msg);
+		return $response->withStatus(500)
+			->withHeader('Content-Type', 'text/html');
+	}
+});
+
 $app->get('/visit/{id}', function ($request, $response, $args) {
 	try{
     $id = $request->getAttribute('id');
@@ -102,6 +117,22 @@ $app->get('/visitimageurl/{id}', function ($request, $response, $args) {
 });
 
 
+$app->get('/endvisit/{id}', function ($request, $response, $args) {
+	try{
+    $id = $request->getAttribute('id');
+    $date = ModelVisit::endvisit($id);
+    $response->getBody()->write($date);
+
+    return $response->withHeader("Content-Type", "text/html");
+	}catch(Exception $e){
+    $msg = $e->getMessage();
+    $response->getBody()->write($msg);
+		return $response->withStatus(500)
+			->withHeader('Content-Type', 'text/html');
+	}
+});
+
+
 
 
 $app->post('/visit', function ($request, $response) {
@@ -113,6 +144,7 @@ $app->post('/visit', function ($request, $response) {
 	try{
 		ModelVisit::saveToDB($obj);
     $json = json_encode($obj);
+
     executeUploadFile($request, $obj->id);
 
     $response->getBody()->write($json);
@@ -130,10 +162,10 @@ $app->post('/visit', function ($request, $response) {
 function executeUploadFile($request, $id){
   // $uploadedFile = $request->getParsedBodyParam('img1');
   $uploadedFile = $request->getParsedBody()['img1'];
-  uploadFromData($uploadedFile, $id, 1 );
+  uploadFromData($uploadedFile, $id, (int) 1 );
 
   $uploadedFile = $request->getParsedBody()['img2'];
-  uploadFromData($uploadedFile, $id, 2 );
+  uploadFromData($uploadedFile, $id,  (int) 2 );
 }
 
 
@@ -173,17 +205,20 @@ function uploadFromData($data, $id,  $imgidx) {
     if($ext != null) {
         $image = base64_decode($data);
         // $filename = date('YmdHis') . '.' . createToken() . $ext;
-        $filename = date('YmdHis') . '_' .$id.toString() .'_'.  $imgidx.toString()  . $ext;
+        $filename = date('YmdHis') . '_' .$id .'_'.  $imgidx  . $ext;
         if(file_put_contents($directory . DIRECTORY_SEPARATOR . $filename, $image) !== FALSE) {
           $db = new DB();
           $db = $db->connect();
           $db->beginTransaction();
           try {
-            $sql = 'INSERT INTO visitimage (visit_id, imgpath1) VALUES(:visit_id, :imgpath ' . $imgidx.toString() . ' )';
+            //$sql = 'INSERT INTO visitimage (visit_id, imgpath' . $imgidx . ') VALUES(:visit_id, :imgpath' . $imgidx . ' )';
+
+            $sql = 'update visitimage set  imgpath' . $imgidx . ' = :imgpath' . ' where visit_id = :visit_id';
+
             $stmt = $db->prepare($sql);
             $stmt->execute([
                 ':visit_id' => $id,
-                ':imgpath' . $imgidx.toString() => $filename
+                ':imgpath'  => $filename
             ]);
             $db->commit();
           } catch (Exception $e) {

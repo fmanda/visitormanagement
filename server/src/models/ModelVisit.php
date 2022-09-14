@@ -14,10 +14,12 @@
 			if (isset($obj->visitor_id)) $obj->visitor = ModelVisitor::retrieve($obj->visitor_id);
 			if (isset($obj->dept_id)) $obj->department = ModelDepartment::retrieve($obj->dept_id);
 
-			$str = "SELECT imgpath1 FROM visitimage where visit_id = " . $id  . " and imgpath1 is not null order by imgpath1 desc";
+			$str = "SELECT imgpath1, imgpath2 FROM visitimage where visit_id = " . $id
+						. " and imgpath1 is not null or imgpath2 is not null order by imgpath1 desc";
 	    $rows =  DB::openQuery($str);
 			if (isset($rows[0])) {
 				$obj->imgpath1 = $rows[0]->imgpath1;
+				$obj->imgpath2 = $rows[0]->imgpath2;
 			}
 
 			return $obj;
@@ -27,12 +29,12 @@
 			$sql = 'select a.*, b.visitorname, b.company, b.address, b.idcardno, b.phone , c."name" as deptname from visit a
 							left join visitor b on a.visitor_id = b.id
 							left join jsection c on a.dept_id = c.section_id
-							';
+							where 1=1 ';
 			if ($filter<>''){
 				$sql = $sql .' and '. $filter;
 			}
 			$obj = DB::openQuery($sql);
-			return $obj;
+			return $obj ;
 		}
 
 		private static function isNewVisitor($obj){
@@ -49,6 +51,7 @@
 			$db = new DB();
 			$db = $db->connect();
 			$db->beginTransaction();
+			$isnew = static::isNewTransaction($obj);
 			try {
 				if ( !isset($obj->entrydate)) {
 
@@ -74,8 +77,44 @@
 					$db->prepare($sql)->execute();
 				}
 
+				//insert blank imange
+				if ($isnew){
+					$sql = 'delete from visitimage where visit_id = '.  $db->quote($obj->id);
+					$db->prepare($sql)->execute();
+
+					$sql = 'insert into visitimage(visit_id) values ('. $db->quote($obj->id) . ')';
+					$db->prepare($sql)->execute();
+				}
+
 				$db->commit();
 				$db = null;
+
+			} catch (Exception $e) {
+				$db->rollback();
+				throw $e;
+			}
+		}
+
+		public static function endVisit($id){
+			$db = new DB();
+			$db = $db->connect();
+			$db->beginTransaction();
+			try {
+				date_default_timezone_set('Asia/Jakarta');
+				$date = new \DateTime();
+				$exitdate = $date->format('Y-m-d H:i:s');
+
+				$sql = 'update visit set exitdate = :exitdate where id = :id;';
+				$stmt = $db->prepare($sql);
+				$stmt->execute([
+					':id'  => $id,
+					':exitdate'  => $exitdate
+				]);
+
+				$db->commit();
+				$db = null;
+
+				return $exitdate;
 
 			} catch (Exception $e) {
 				$db->rollback();

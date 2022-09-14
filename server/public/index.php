@@ -28,7 +28,7 @@ $app->setBasePath('/public');
 // ]));
 
 
-
+//
 // $app->add(new Tuupola\Middleware\JwtAuthentication([
 //     "regexp" => "/(.*)/", //default format Bearer <token>
 //     "secret" => $config["secret"],
@@ -37,10 +37,7 @@ $app->setBasePath('/public');
 //         new Tuupola\Middleware\JwtAuthentication\RequestPathRule([
 //             "ignore" => [
 //               $app->getBasePath() . "/check",
-//               $app->getBasePath() . "/login",
-//               $app->getBasePath() . "/kpidept_upload_ml",
-//               $app->getBasePath() . "/kpidept_upload_kpi",
-//               $app->getBasePath() . "/downloadfile"
+//               $app->getBasePath() . "/login"
 //             ]
 //         ]),
 //         new Tuupola\Middleware\JwtAuthentication\RequestMethodRule([

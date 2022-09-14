@@ -23,10 +23,18 @@ export function getListVisit() {
   })
 }
 
-export function postVisit(data, img1) {
+export function getOngoingVisit() {
+  return request({
+    url: 'ongoingvisit',
+    method: 'get'
+  })
+}
+
+export function postVisit(data, img1, img2) {
 
   const formData = new FormData();
   formData.append('img1', img1)
+  formData.append('img2', img2)
   // formData.append('test', 'test')
   formData.append('data', JSON.stringify(data));
 
@@ -62,6 +70,13 @@ export function getVisitImage(id) {
 export function getVisitImgURL(id) {
   if (!id) return null;
   return process.env.VUE_APP_IMG_URL + '/'+  id.toString();
+}
+
+export function endVisit(id) {
+  return request({
+    url: 'endvisit/' + id.toString() ,
+    method: 'get'
+  })
 }
 
 export function getElapsedTime(startTime){
