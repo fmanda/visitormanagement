@@ -49,6 +49,30 @@ $app->get('/ongoingvisit', function ($request, $response) {
 	}
 });
 
+$app->get('/searchvisit/{dt1}/{dt2}[/{filtertxt}]', function ($request, $response) {
+  try{
+    $dt1 = $request->getAttribute('dt1');
+    $dt2 = $request->getAttribute('dt2');
+    $filtertxt = $request->getAttribute('filtertxt');
+
+    $filter = " cast(entrydate as date) between '".  $dt1
+              . "' and '". $dt2 . "' and (lower(visitorname) like '%"
+              . strtolower($filtertxt) . "%' or lower(person_to_meet) like '%"
+              . strtolower($filtertxt) . "%') ";
+
+    $data = ModelVisit::retrieveList($filter);
+    $json = json_encode($data);
+    $response->getBody()->write($json);
+
+		return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+	}catch(Exception $e){
+    $msg = $e->getMessage();
+    $response->getBody()->write($msg);
+		return $response->withStatus(500)
+			->withHeader('Content-Type', 'text/html');
+	}
+});
+
 $app->get('/visit/{id}', function ($request, $response, $args) {
 	try{
     $id = $request->getAttribute('id');

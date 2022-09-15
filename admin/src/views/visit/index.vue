@@ -14,25 +14,36 @@
       text-color="#fff"
       active-text-color="#ffd04b"
       @select="handleSelect"
+      style = "margin-bottom: 10px"
     >
-      <el-menu-item index="1">Sedang Berlangsung</el-menu-item>
-      <el-menu-item index="2">Semua Kunjungan</el-menu-item>
+      <el-menu-item index="1"><i class="el-icon-user"></i>Sedang Berlangsung</el-menu-item>
+      <el-menu-item index="2"><i class="el-icon-date"></i>Semua Kunjungan</el-menu-item>
+      <el-menu-item index="3"><i class="el-icon-document"></i>Dokumen Masuk</el-menu-item>
     </el-menu>
-    <br/>
 
-    <el-date-picker
-      v-if= "activeMenu === '2'"
-      v-model="filterperiod"
-      type="daterange"
-      align="right"
-      unlink-panels
-      range-separator="To"
-      start-placeholder="Start date"
-      end-placeholder="End date"
-      :picker-options="pickerOptions"
-      onchange="handleChangePeriod"
-      >
-    </el-date-picker>
+    <div v-if= "activeMenu == '2' ">
+      <el-date-picker
+        v-model="filterperiod"
+        type="daterange"
+        align="right"
+        unlink-panels
+        range-separator="To"
+        start-placeholder="Start date"
+        end-placeholder="End date"
+        :picker-options="pickerOptions"
+        @change="handleChangePeriod"
+        style = "float: right; margin-left: 10px; margin-bottom: 10px;"
+        >
+      </el-date-picker>
+      <el-input
+        placeholder="Pencarian"
+        prefix-icon="el-icon-search"
+        style = "width: 400px; float: right; margin-bottom: 10px;"
+        @change="handleChangeInputSearch"
+        clearable
+        v-model="filtertxt">
+      </el-input>
+    </div>
 
     <el-table
       :v-loading="listLoading"
@@ -89,6 +100,7 @@
       </el-table-column>
 
       <el-table-column
+        v-if="activeMenu == '1'"
         label="Durasi"
         width="120"
         sortable
@@ -102,13 +114,26 @@
       </el-table-column>
 
       <el-table-column
+        v-if="activeMenu == '2'"
+        label="Keluar"
+        width="180"
+        sortable
+        >
+        <template slot-scope="scope">
+          <!-- <i class="el-icon-time"></i> -->
+          <span style="margin-left: 10px">{{ scope.row.exitdate }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column
         fixed="right"
         label="Status"
         width="140">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button plain icon="el-icon-edit-outline" size="small" @click="handleEdit(scope.$index, scope.row)"></el-button>
-            <el-button plain size="small" @click="handleEndVisit(scope.row)" >Keluar</el-button>
+            <el-button v-if="activeMenu == '1'" plain icon="el-icon-edit-outline" size="small" @click="handleEdit(scope.$index, scope.row)"></el-button>
+            <el-button v-if="activeMenu == '1'" plain size="small" @click="handleEndVisit(scope.row)" >Keluar</el-button>
+            <el-button v-if="activeMenu == '2'" plain icon="el-icon-view" size="small" @click="handleEdit(scope.$index, scope.row, true)"></el-button>
           </el-button-group>
           <!-- <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
           <el-button type="danger" round size="mini">Keluar</el-button>       -->
@@ -117,7 +142,8 @@
 
     </el-table>
     <br>
-    <el-button type="success" icon="el-icon-plus" @click.native.prevent="handleNew()">Rekam Data Kunjungan</el-button>
+    <el-button v-if="activeMenu <= '2'" type="success" icon="el-icon-plus" @click.native.prevent="handleNew()">Data Kunjungan</el-button>
+    <el-button v-if="activeMenu == '3'" type="success" icon="el-icon-plus" @click.native.prevent="handleNew()">Dokumen Masuk</el-button>
 
     <el-dialog :title="dialogData.caption" :visible.sync="dialogVisible" width="900px" :before-close="handleCloseDlg"
       class="inputdialog" top="5vh"
@@ -278,10 +304,10 @@
         </el-col>
       </el-row>
       <span slot="footer" class="dialog-footer">
-        <el-button style ="float: left;" @click.native.prevent="showDialogPhoto(1)">Foto Pengunjung</el-button>
-        <el-button style ="float: left;" @click.native.prevent="showDialogPhoto(2)">Foto Identitas</el-button>
-        <el-button type="primary" @click.native.prevent="saveData()">Simpan</el-button>
-        <el-button type="danger" @click="dialogVisible = false">Batal</el-button>
+        <el-button style ="float: left;"  :disabled = "dialogReadOnly" @click.native.prevent="showDialogPhoto(1)">Foto Pengunjung</el-button>
+        <el-button style ="float: left;" :disabled = "dialogReadOnly"  @click.native.prevent="showDialogPhoto(2)">Foto Identitas</el-button>
+        <el-button type="primary" :disabled = "dialogReadOnly" @click.native.prevent="saveData()">Simpan</el-button>
+        <el-button type="danger"  @click="dialogVisible = false">Batal</el-button>
       </span>
     </el-dialog>
 
@@ -310,8 +336,8 @@
           </el-option>
 
         </el-select>
-        <el-button type="primary" style ="float: center;" @click.native.prevent="onCapture">Ambil Foto</el-button>
-        <el-button type="danger" @click="dialogPhotoVisible = false">Batal</el-button>
+        <el-button type="primary" :disabled = "dialogReadOnly" style ="float: center;" @click.native.prevent="onCapture">Ambil Foto</el-button>
+        <el-button type="danger" :disabled = "dialogReadOnly" @click="dialogPhotoVisible = false">Batal</el-button>
         <!-- <el-button type="primary" style ="right: center;" @click.native.prevent="onStart">Start Camera</el-button> -->
       </span>
     </el-dialog>
@@ -319,7 +345,7 @@
 </template>
 
 <script>
-import { getVisit, getListVisit, postVisit, getVisitImgURL, getElapsedTime, endVisit, getOngoingVisit } from '@/api/visit'
+import { getVisit, getListVisit, postVisit, getVisitImgURL, getElapsedTime, endVisit, getOngoingVisit, searchVisit } from '@/api/visit'
 import { getListVisitor, getVisitor } from '@/api/visitor'
 import { getListDept, getListEmployee } from '@/api/department'
 import { WebCam } from 'vue-web-cam';
@@ -346,7 +372,7 @@ export default {
       // loadingDialog: false,
       dialogPhotoVisible: false,
       dialogPhotoActiveIdx: 0,
-      activeMenu: '1',
+      activeMenu: '2',
       img1: null,
       img2: null,
       camera: null,
@@ -360,7 +386,7 @@ export default {
       listemployee: [],
       employeeLoading: false,
       selectedVisitorID: null,
-      filterperiod: null,
+      filterperiod: [new Date() -(3600 * 1000 * 24 * 30), new Date()],
       pickerOptions: {
         shortcuts: [{
           text: 'Seminggu Terakhir',
@@ -387,7 +413,10 @@ export default {
             picker.$emit('pick', [start, end]);
           }
         }]
-      }
+      },
+      filtertxt: '',
+      dialogReadOnly: false,
+      isdocument: false
     }
   },
   created() {
@@ -485,6 +514,18 @@ export default {
           this.listLoading = false;
           this.setTimers();
         })
+      }else {
+        const dt1 = this.filterperiod[0];
+        const dt2 = this.filterperiod[1];
+
+        if (!dt1 ||  !dt2) return;
+        // if (!this.filtertxt) return;
+
+        searchVisit(dt1, dt2, this.filtertxt).then(response => {
+          this.data = response.data;
+          this.listLoading = false;
+          // this.setTimers();
+        })
       }
 
     },
@@ -579,16 +620,20 @@ export default {
         })
         .catch(_ => {});
     },
-    handleEdit(index, row) {
+    handleEdit(index, row, viewonly = false) {
+      this.dialogReadOnly = viewonly;
       this.showDialog(row.id);
       // this.$router.push({ name: 'update_department', params: { id: row.id }})
     },
-    handleNew() {
+    handleNew(isdoc = false) {
+      this.isdocument = isdoc;
       this.showDialog(0);
       // this.$router.push({ path: '/master/update_department' })
     },
     handleSelect(key, keyPath) {
       // console.log(key, keyPath);
+      this.activeMenu  = key;
+      this.fetchData()
     },
     getVisitorNameFromAR(id){
       for (var v in this.data){
@@ -667,7 +712,12 @@ export default {
       // console.log("On Camera Change Event", deviceId);
     },
     handleChangePeriod(){
-      console.log(this.filterperiod);
+      // console.log(this.filterperiod);
+      this.fetchData()
+    },
+    handleChangeInputSearch(){
+      // console.log('handleChangeInputSearch');
+      this.fetchData()
     }
   }
 }

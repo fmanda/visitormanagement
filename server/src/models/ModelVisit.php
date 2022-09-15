@@ -15,8 +15,9 @@
 			if (isset($obj->dept_id)) $obj->department = ModelDepartment::retrieve($obj->dept_id);
 
 			$str = "SELECT imgpath1, imgpath2 FROM visitimage where visit_id = " . $id
-						. " and imgpath1 is not null or imgpath2 is not null order by imgpath1 desc";
+						. " and (imgpath1 is not null or imgpath2 is not null) order by imgpath1 desc";
 	    $rows =  DB::openQuery($str);
+
 			if (isset($rows[0])) {
 				$obj->imgpath1 = $rows[0]->imgpath1;
 				$obj->imgpath2 = $rows[0]->imgpath2;
@@ -33,6 +34,7 @@
 			if ($filter<>''){
 				$sql = $sql .' and '. $filter;
 			}
+
 			$obj = DB::openQuery($sql);
 			return $obj ;
 		}
