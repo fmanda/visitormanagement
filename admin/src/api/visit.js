@@ -79,13 +79,22 @@ export function endVisit(id) {
 export function searchVisit(dt1, dt2, filtertxt) {
   let _url = 'searchvisit/' + formatDate(dt1) + '/' + formatDate(dt2);
   if (filtertxt && filtertxt != '') _url = _url  + '/' + filtertxt;
-  
+
   return request({
     url: _url,
     method: 'get'
   })
 }
 
+export function searchDocument(dt1, dt2, filtertxt) {
+  let _url = 'searchdocument/' + formatDate(dt1) + '/' + formatDate(dt2);
+  if (filtertxt && filtertxt != '') _url = _url  + '/' + filtertxt;
+
+  return request({
+    url: _url,
+    method: 'get'
+  })
+}
 
 export function getElapsedTime(startTime) {
   // Record end time

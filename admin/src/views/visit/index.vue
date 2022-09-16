@@ -21,7 +21,7 @@
       <el-menu-item index="3"><i class="el-icon-document"></i>Dokumen Masuk</el-menu-item>
     </el-menu>
 
-    <div v-if= "activeMenu == '2' ">
+    <div v-if= "activeMenu >= '2' ">
       <el-date-picker
         v-model="filterperiod"
         type="daterange"
@@ -85,9 +85,11 @@
         </template>
       </el-table-column>
       <el-table-column label="Pengunjung" prop="visitorname" sortable/>
-      <!-- <el-table-column label="Keperluan" prop="reason" /> -->
       <el-table-column label="Menemui" prop="person_to_meet" sortable/>
-      <el-table-column label="Department" prop="deptname" sortable/>
+
+      <el-table-column v-if = "activeMenu === '3'" label="Nama Dokumen" prop="documentname" sortable/>
+      <el-table-column v-else label="Department" prop="deptname" sortable/>
+
       <el-table-column
         label="Masuk"
         width="180"
@@ -131,9 +133,9 @@
         width="140">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button v-if="activeMenu == '1'" plain icon="el-icon-edit-outline" size="small" @click="handleEdit(scope.$index, scope.row)"></el-button>
-            <el-button v-if="activeMenu == '1'" plain size="small" @click="handleEndVisit(scope.row)" >Keluar</el-button>
-            <el-button v-if="activeMenu == '2'" plain icon="el-icon-view" size="small" @click="handleEdit(scope.$index, scope.row, true)"></el-button>
+            <el-button v-if="['1','3'].includes(activeMenu)" plain icon="el-icon-edit-outline" size="small" @click="handleEdit(scope.$index, scope.row)"></el-button>
+            <el-button v-if="activeMenu === '1'" plain size="small" @click="handleEndVisit(scope.row)" >Keluar</el-button>
+            <el-button v-if="['2','3'].includes(activeMenu)" plain icon="el-icon-view" size="small" @click="handleEdit(scope.$index, scope.row, true)"></el-button>
           </el-button-group>
           <!-- <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
           <el-button type="danger" round size="mini">Keluar</el-button>       -->
@@ -142,8 +144,8 @@
 
     </el-table>
     <br>
-    <el-button v-if="activeMenu <= '2'" type="success" icon="el-icon-plus" @click.native.prevent="handleNew()">Data Kunjungan</el-button>
-    <el-button v-if="activeMenu == '3'" type="success" icon="el-icon-plus" @click.native.prevent="handleNew()">Dokumen Masuk</el-button>
+    <el-button v-if="activeMenu <= '2'" type="primary" icon="el-icon-plus" @click.native.prevent="handleNew()">Data Kunjungan</el-button>
+    <el-button v-if="activeMenu === '3'" type="primary" icon="el-icon-plus" @click.native.prevent="handleNew()">Dokumen Masuk</el-button>
 
     <el-dialog :title="dialogData.caption" :visible.sync="dialogVisible" width="900px" :before-close="handleCloseDlg"
       class="inputdialog" top="5vh"
@@ -263,7 +265,8 @@
 
               <!-- <el-input v-model="dialogData.person_to_meet"></el-input> -->
             </el-descriptions-item>
-            <el-descriptions-item>
+
+            <el-descriptions-item v-if="activeMenu != '3'">
               <template slot="label">
                 <i class="el-icon-location-outline"></i>
                 Keperluan
@@ -271,6 +274,17 @@
               <el-input v-model="dialogData.reason">
               </el-input>
             </el-descriptions-item>
+
+            <el-descriptions-item v-if="activeMenu === '3'">
+              <template slot="label">
+                <i class="el-icon-document"></i>
+                Dokumen
+              </template>
+              <el-input v-model="dialogData.documentname">
+              </el-input>
+            </el-descriptions-item>
+
+
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-mobile-phone"></i>
@@ -304,8 +318,14 @@
         </el-col>
       </el-row>
       <span slot="footer" class="dialog-footer">
-        <el-button style ="float: left;"  :disabled = "dialogReadOnly" @click.native.prevent="showDialogPhoto(1)">Foto Pengunjung</el-button>
-        <el-button style ="float: left;" :disabled = "dialogReadOnly"  @click.native.prevent="showDialogPhoto(2)">Foto Identitas</el-button>
+        <el-button style ="float: left;"  :disabled = "dialogReadOnly" @click.native.prevent="showDialogPhoto(1)">
+          <span v-if="activeMenu === '3'">Foto Dokumen 1</span>
+          <span v-else>Foto Pengunjung</span>
+        </el-button>
+        <el-button style ="float: left;" :disabled = "dialogReadOnly"  @click.native.prevent="showDialogPhoto(2)">
+          <span v-if="activeMenu === '3'">Foto Dokumen 2</span>
+          <span v-else>Foto Identitas</span>
+        </el-button>
         <el-button type="primary" :disabled = "dialogReadOnly" @click.native.prevent="saveData()">Simpan</el-button>
         <el-button type="danger"  @click="dialogVisible = false">Batal</el-button>
       </span>
@@ -345,7 +365,7 @@
 </template>
 
 <script>
-import { getVisit, getListVisit, postVisit, getVisitImgURL, getElapsedTime, endVisit, getOngoingVisit, searchVisit } from '@/api/visit'
+import { getVisit, getListVisit, postVisit, getVisitImgURL, getElapsedTime, endVisit, getOngoingVisit, searchVisit, searchDocument } from '@/api/visit'
 import { getListVisitor, getVisitor } from '@/api/visitor'
 import { getListDept, getListEmployee } from '@/api/department'
 import { WebCam } from 'vue-web-cam';
@@ -415,8 +435,8 @@ export default {
         }]
       },
       filtertxt: '',
-      dialogReadOnly: false,
-      isdocument: false
+      dialogReadOnly: false
+      // isdocument: false
     }
   },
   created() {
@@ -508,24 +528,35 @@ export default {
       this.img1 = null;
       this.img2 = null;
 
-      if (this.activeMenu == '1'){
+      if (this.activeMenu === '1'){
         getOngoingVisit().then(response => {
           this.data = response.data;
           this.listLoading = false;
           this.setTimers();
         })
-      }else {
+      }
+      else if (['2','3'].includes(this.activeMenu)){
+
+        if (!this.filterperiod) return
         const dt1 = this.filterperiod[0];
         const dt2 = this.filterperiod[1];
 
         if (!dt1 ||  !dt2) return;
         // if (!this.filtertxt) return;
-
-        searchVisit(dt1, dt2, this.filtertxt).then(response => {
-          this.data = response.data;
-          this.listLoading = false;
-          // this.setTimers();
-        })
+        if (this.activeMenu === '2') {
+          searchVisit(dt1, dt2, this.filtertxt).then(response => {
+            this.data = response.data;
+            this.listLoading = false;
+            // this.setTimers();
+          })
+        }
+        else {
+          searchDocument(dt1, dt2, this.filtertxt).then(response => {
+            this.data = response.data;
+            this.listLoading = false;
+            // this.setTimers();
+          })
+        }
       }
 
     },
@@ -626,7 +657,7 @@ export default {
       // this.$router.push({ name: 'update_department', params: { id: row.id }})
     },
     handleNew(isdoc = false) {
-      this.isdocument = isdoc;
+      // this.isdocument = isdoc;
       this.showDialog(0);
       // this.$router.push({ path: '/master/update_department' })
     },
@@ -654,16 +685,14 @@ export default {
     },
     saveData() {
       var vm = this;
-
-      // this.dialogData.department = {
-      //   id : this.param_department_id
-      // };
       this.dialogData.dept_id = this.param_department_id;
-      // if (!this.dialogData.entrydate)
-      // this.dialogData.entrydate =  null; // new Date();
-      //
-      // this.dialogData.entrydate.setMilliseconds(0);
-      // console.log(  this.dialogData.entrydate );
+
+      if (this.activeMenu === '3') {
+        this.dialogData.isdocument = 1
+      } else {
+        this.dialogData.isdocument = 0
+      }
+
       postVisit(this.dialogData, this.img1, this.img2).then(response => {
         vm.$message({
           type: 'success',

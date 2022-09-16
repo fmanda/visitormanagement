@@ -5,7 +5,7 @@
 	class ModelVisit extends BaseModel{
 		public static function getFields(){
 			return array(
-				"visitor_id", "entrydate", "exitdate", "dept_id", "person_to_meet", "reason", "img_path", "user_id"
+				"visitor_id", "entrydate", "exitdate", "dept_id", "person_to_meet", "reason", "img_path", "user_id", "isdocument", "documentname"
 			);
 		}
 
