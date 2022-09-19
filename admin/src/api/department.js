@@ -35,3 +35,16 @@ export function getListEmployee(deptname, employeename) {
     method: 'get'
   })
 }
+
+export function getAllEmployee(employeename) {
+  var _url = 'allemployee';
+
+  if (employeename && employeename != ''){
+    _url = 'allemployee/' + employeename;
+  }
+
+  return request({
+    url: _url ,
+    method: 'get'
+  })
+}

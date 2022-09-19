@@ -46,7 +46,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/Dashboard',
     children: [{
       path: 'dashboard',
       name: 'Dashboard',
@@ -59,7 +59,7 @@ export const constantRoutes = [
     path: '/master',
     component: Layout,
     name: 'Master',
-    meta: { title: 'Data', icon: 'table' },
+    meta: { title: 'Data', icon: 'el-icon-setting' },
     children: [
       {
         path: 'department',
@@ -67,16 +67,12 @@ export const constantRoutes = [
         component: () => import('@/views/master/department/index'),
         meta: { title: 'Department', icon: 'link' }
       },
-
-      // {
-      //   props: true,
-      //   path: 'update_department',
-      //   name: 'update_department',
-      //   component: () => import('@/views/master/department/update'),
-      //   meta: { title: 'Update Department', icon: 'link' },
-      //   hidden: true
-      // },
-
+      {
+        path: 'employee',
+        name: 'Employee',
+        component: () => import('@/views/master/employee/index'),
+        meta: { title: 'Karyawan', icon: 'user' }
+      },
       {
         path: 'users',
         name: 'Users',
@@ -95,42 +91,55 @@ export const constantRoutes = [
         path: 'visit',
         name: 'visit',
         component: () => import('@/views/visit/index'),
-        meta: { title: 'Kunjungan', icon: 'password' }
+        meta: { title: 'Kunjungan', icon: 'el-icon-s-custom' }
       }
     ]
   },
 
   {
-    path: '/upload',
-    // name: 'upload_p',
+    path: '/appointment',
     component: Layout,
     children: [
       {
-        path: 'upload',
-        name: 'upload',
-        component: () => import('@/views/upload/index'),
-        meta: { title: 'Upload Data', icon: 'link' }
+        path: 'appointment',
+        name: 'appointment',
+        component: () => import('@/views/appointment/index'),
+        meta: { title: 'Appointment', icon: 'el-icon-date' }
       }
     ]
   },
+
+  // {
+  //   path: '/upload',
+  //   // name: 'upload_p',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'upload',
+  //       name: 'upload',
+  //       component: () => import('@/views/upload/index'),
+  //       meta: { title: 'Upload Data', icon: 'link' }
+  //     }
+  //   ]
+  // },
 
   {
     path: '/report',
     component: Layout,
     name: 'Report',
-    meta: { title: 'Laporan', icon: 'table' },
+    meta: { title: 'Laporan', icon: 'el-icon-document' },
     children: [
       {
         path: 'visitreport',
         name: 'Buku Tamu',
         component: () => import('@/views/master/department/index'),
-        meta: { title: 'Department', icon: 'link' }
+        meta: { title: 'Buku Tamu', icon: 'link' }
       },
       {
         path: 'visitorreport',
         name: 'Data Pengunjung',
         component: () => import('@/views/master/department/index'),
-        meta: { title: 'Department', icon: 'link' }
+        meta: { title: 'Data Pengunjung', icon: 'link' }
       }
       // {
       //   props: true,

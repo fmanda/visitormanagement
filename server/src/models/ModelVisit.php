@@ -5,7 +5,8 @@
 	class ModelVisit extends BaseModel{
 		public static function getFields(){
 			return array(
-				"visitor_id", "entrydate", "exitdate", "dept_id", "person_to_meet", "reason", "img_path", "user_id", "isdocument", "documentname"
+				"visitor_id", "entrydate", "exitdate", "dept_id", "person_to_meet", "reason", "img_path",
+				"user_id", "isdocument", "documentname", "appointment_id"
 			);
 		}
 
@@ -47,6 +48,18 @@
 				}
 			}
 			return $isNew;
+		}
+
+		public static function deleteFromDB($id){
+			try{
+				$obj = parent::retrieve($id);
+				$str = static::generateSQLDelete("id=". $id);
+				$str = $str . 'delete from visitimage where visit_id = '.  $db->quote($obj->id);
+				DB::executeSQL($str);
+			} catch (Exception $e) {
+				$db->rollback();
+				throw $e;
+			}
 		}
 
 		public static function saveToDB($obj){

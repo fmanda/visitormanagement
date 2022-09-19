@@ -185,7 +185,7 @@ $app->get('/endvisit/{id}', function ($request, $response, $args) {
 
 $app->post('/visit', function ($request, $response) {
   $json = $request->getParsedBody()['data'];
-  var_dump($json);
+  // var_dump($json);
 	$obj = json_decode($json);
 
   // var_dump($obj);

@@ -5,7 +5,7 @@
       :data="data.filter(data => !search || data.deptname.toLowerCase().includes(search.toLowerCase()))"
       style="width: 100%"
     >
-      <el-table-column label="Dept Code" prop="deptcode" width="100px" />
+      <el-table-column label="Dept Code" prop="deptcode" width="200px" />
       <el-table-column label="Dept Name" prop="deptname" />
       <el-table-column
         align="right"
@@ -22,7 +22,7 @@
           <el-button
             size="mini"
             @click="handleEdit(scope.$index, scope.row)"
-          >Edit</el-button>
+          >View</el-button>
           <!-- <el-button
             v-if="scope.row.deptcode !== null "
             size="mini"
@@ -100,15 +100,19 @@ export default {
       // this.$router.push({ path: '/master/update_department' })
     },
     saveData() {
-      var vm = this;
-      postDepartment(this.dialogData).then(response => {
-        vm.$message({
-          type: 'success',
-          message: 'Data Berhasil Disimpan'
-        });
-        vm.dialogVisible = false;
-        vm.fetchData();
-      })
+      this.$message({
+        type: 'warning',
+        message: "Don't bother trying, data punya HRIS, read only bos"
+      });
+      // var vm = this;
+      // postDepartment(this.dialogData).then(response => {
+      //   vm.$message({
+      //     type: 'success',
+      //     message: 'Data Berhasil Disimpan'
+      //   });
+      //   vm.dialogVisible = false;
+      //   vm.fetchData();
+      // })
     }
   }
 }

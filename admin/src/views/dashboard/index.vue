@@ -1,30 +1,55 @@
 <template>
   <div class="dashboard-container">
-    <!-- <div class="dashboard-text">name: {{ name }} department_id {{ department_id }}</div> -->
+    <el-row>
+      <el-col :span="8" class="card-container">
+        <el-card class="box-card">
+          <el-badge :value="12" class="item">
+            <el-tag type="primary">Pengunjung</el-tag>
+          </el-badge>
+        </el-card>
+      </el-col>
+      <el-col :span="8" class="card-container">
+        <el-card class="box-card">
+          <el-badge :value="12" class="item">
+            <el-tag type="warning">Dokumen</el-tag>
+          </el-badge>
+        </el-card>
+      </el-col>
+      <el-col :span="8" class="card-container" >
+        <el-card class="box-card">
+          <el-badge :value="12" class="item">
+            <el-tag type="success">Appointment</el-tag>
+          </el-badge>
+        </el-card>
+      </el-col>
+    </el-row>
+
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 
 export default {
-  name: 'Dashboard',
-  computed: {
-    ...mapGetters([
-      'name', 'department_id'
-    ])
-  }
+  name: 'dashboard'
 }
 </script>
 
 <style lang="scss" scoped>
-.dashboard {
-  &-container {
-    margin: 30px;
+  .dashboard {
+    &-container {
+      margin: 30px;
+    }
+    &-text {
+      font-size: 30px;
+      line-height: 46px;
+    }
   }
-  &-text {
-    font-size: 30px;
-    line-height: 46px;
+
+  .box-card {
+    width: 100%;
   }
-}
+
+  .card-container {
+    padding: 10px;
+  }
 </style>

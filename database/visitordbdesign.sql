@@ -28,8 +28,22 @@ create table visit(
 	person_to_meet varchar(150),
 	reason varchar(255),
 	img_path varchar(255),
-	user_id int
+	user_id int,
+	isdocument int,
+	documentname varchar(255),
+	appointment_id int
 )
+
+create table appointment(
+	id serial primary key,
+	visitor_id int,
+	calldate timestamp without time zone,
+	planningdate timestamp without time zone,
+	dept_id int,
+	person_to_meet varchar(150),
+	reason varchar(255)
+)
+
 
 create table testheader(
 	id serial primary key,
