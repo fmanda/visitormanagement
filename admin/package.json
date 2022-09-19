@@ -19,6 +19,8 @@
   "dependencies": {
     "axios": "^0.27.2",
     "core-js": "3.6.5",
+    "devextreme": "22.1.5",
+    "devextreme-vue": "22.1.5",
     "element-ui": "2.15.8",
     "js-cookie": "2.2.0",
     "normalize.css": "7.0.0",

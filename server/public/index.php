@@ -73,10 +73,8 @@ require '../src/routes/visitor.php';
 require '../src/routes/visit.php';
 require '../src/routes/appointment.php';
 require '../src/routes/department.php';
-//require '../src/routes/kpidept.php';
-//require '../src/routes/directory.php';
+require '../src/routes/dashboard.php';
 require '../src/routes/users.php';
-//require '../src/routes/uploadlog.php';
 
 
 // $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function($req, $res) {
