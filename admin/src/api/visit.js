@@ -14,9 +14,17 @@ export function getVisit(visitID) {
   })
 }
 
+
 export function getListVisit() {
   return request({
     url: 'visit',
+    method: 'get'
+  })
+}
+
+export function getCurrentAppointment() {
+  return request({
+    url: 'currentappointment',
     method: 'get'
   })
 }
@@ -28,34 +36,39 @@ export function getOngoingVisit() {
   })
 }
 
-export function postVisit(data, img1, img2) {
-  const formData = new FormData();
-  formData.append('img1', img1)
-  formData.append('img2', img2)
-  // formData.append('test', 'test')
-  formData.append('data', JSON.stringify(data));
+//multipart form data
+// export function postVisit(data, img1, img2) {
+//   const formData = new FormData();
+//   formData.append('img1', img1)
+//   formData.append('img2', img2)
+//   formData.append('data', JSON.stringify(data));
+//   for (var pair of formData.entries()) {
+//     console.log(pair[0] + ', ' + pair[1]);
+//   }
+//
+//   return request({
+//     url: 'visit',
+//     method: 'post',
+//     data: formData,
+//     timeout: 12000
+//   })
+// }
 
-  for (var pair of formData.entries()) {
-    console.log(pair[0] + ', ' + pair[1]);
+
+export function postVisit(_data, img1, img2) {
+  const alldata = {
+    data: _data,
+    img1: img1,
+    img2: img2
   }
 
-  // const token = getToken();
-
-  // return customRest.request({
-  //     url: 'visit',
-  //     method: 'post',
-  //     data: formData,
-  //     headers: {
-  //       'Authorization' : token,
-  //       // 'content-type': 'multipart/form-data'
-  //     }
-  // })
   return request({
     url: 'visit',
     method: 'post',
-    data: formData
+    data: alldata
   })
 }
+
 
 export function getVisitImage(id) {
   return request({

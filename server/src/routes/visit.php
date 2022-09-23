@@ -181,39 +181,96 @@ $app->get('/endvisit/{id}', function ($request, $response, $args) {
 });
 
 
+$app->get('/currentappointment', function ($request, $response) {
+  try{
+    // $data = ModelUsers::retrieveList();
+    date_default_timezone_set('Asia/Jakarta');
+    $date = new \DateTime();
+    $filterdate = $date->format('Y-m-d');
 
+    //current_date / now() not working
+    $str = "select 0 as id, a.id as appointment_id,
+            a.dept_id,
+            a.planningdate as entrydate,
+            a.reason,
+            a.person_to_meet,
+            b.visitorname,
+            b.company,
+            b.address,
+            b.phone,
+            c.name as deptname
+            from appointment a
+            left join visitor b on a.visitor_id = b.id
+            left join jsection c on a.dept_id = c.section_id
+            left join visit d on d.appointment_id = a.id
+            where d.id is null and a.planningdate::date = '" . $filterdate . "'"  ;
 
+    $data = DB::openQuery($str);
+    $json = json_encode($data);
+    $response->getBody()->write($json);
+
+		return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+	}catch(Exception $e){
+    $msg = $e->getMessage();
+    $response->getBody()->write($msg);
+		return $response->withStatus(500)
+			->withHeader('Content-Type', 'text/html');
+	}
+});
+
+//multipart form data :
+// $app->post('/visit', function ($request, $response) {
+//   $json = $request->getParsedBody()['data'];
+// 	$obj = json_decode($json);
+// 	try{
+// 		ModelVisit::saveToDB($obj);
+//     $json = json_encode($obj);
+//     executeUploadFile($request, $obj->id);
+//     $response->getBody()->write($json);
+//     return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+// 	}catch(Exception $e){
+// 		$msg = $e->getMessage();
+//     $response->getBody()->write($msg);
+// 		return $response->withStatus(500)
+// 			->withHeader('Content-Type', 'text/html');
+// 	}
+// });
+
+//change this shit to json
 $app->post('/visit', function ($request, $response) {
-  $json = $request->getParsedBody()['data'];
-  // var_dump($json);
-	$obj = json_decode($json);
+  $json = $request->getBody();
+  $raw = json_decode($json);
+	$obj = $raw->data;
 
-  // var_dump($obj);
 	try{
 		ModelVisit::saveToDB($obj);
     $json = json_encode($obj);
-
-    executeUploadFile($request, $obj->id);
-
-    $response->getBody()->write($json);
-
-    return $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+    executeUploadFile($raw, $obj->id);
+    // $response->getBody()->write($json);
+    return $response->withHeader('Content-Type', 'text/html');
 	}catch(Exception $e){
 		$msg = $e->getMessage();
     $response->getBody()->write($msg);
 		return $response->withStatus(500)
 			->withHeader('Content-Type', 'text/html');
 	}
-
 });
 
-function executeUploadFile($request, $id){
-  // $uploadedFile = $request->getParsedBodyParam('img1');
-  $uploadedFile = $request->getParsedBody()['img1'];
+//multipart form data :
+// function executeUploadFile($request, $id){
+//   $uploadedFile = $request->getParsedBody()['img1'];
+//   uploadFromData($uploadedFile, $id, (int) 1 );
+//
+//   $uploadedFile = $request->getParsedBody()['img2'];
+//   uploadFromData($uploadedFile, $id,  (int) 2 );
+// }
+
+function executeUploadFile($json, $id){
+  $uploadedFile = $json->img1;
   uploadFromData($uploadedFile, $id, (int) 1 );
 
-  $uploadedFile = $request->getParsedBody()['img2'];
-  uploadFromData($uploadedFile, $id,  (int) 2 );
+  $uploadedFile = $json->img2;
+  uploadFromData($uploadedFile, $id, (int) 2 );
 }
 
 

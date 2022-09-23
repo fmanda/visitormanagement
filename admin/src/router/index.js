@@ -130,17 +130,18 @@ export const constantRoutes = [
     meta: { title: 'Laporan', icon: 'el-icon-document' },
     children: [
       {
-        path: 'visitreport',
-        name: 'Buku Tamu',
-        component: () => import('@/views/master/department/index'),
-        meta: { title: 'Buku Tamu', icon: 'link' }
-      },
-      {
         path: 'visitorreport',
         name: 'Data Pengunjung',
-        component: () => import('@/views/master/department/index'),
+        component: () => import('@/views/master/visitor/index'),
         meta: { title: 'Data Pengunjung', icon: 'link' }
+      },
+      {
+        path: 'visitreport',
+        name: 'Buku Tamu',
+        component: () => import('@/views/visitreport/index'),
+        meta: { title: 'Buku Tamu', icon: 'link' }
       }
+
       // {
       //   props: true,
       //   path: 'update_department',

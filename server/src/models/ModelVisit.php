@@ -35,6 +35,7 @@
 			if ($filter<>''){
 				$sql = $sql .' and '. $filter;
 			}
+			$sql = $sql .' order by a.id desc ';
 
 			$obj = DB::openQuery($sql);
 			return $obj ;

@@ -16,6 +16,14 @@ export function getListVisitor(query) {
   })
 }
 
+export function getAllVisitor() {
+  return request({
+    url: 'visitor',
+    method: 'get'
+  })
+}
+
+
 export function getVisitor(visitorID) {
   return request({
     url: 'visitor/' + visitorID.toString(),

@@ -49,7 +49,7 @@
           >
             <DxSeries
               :bar-padding="0.1"
-              type="bar"
+              type="area"
               argument-field="dayname"
               value-field="visit"
               name="Visit"
@@ -58,7 +58,7 @@
 
             <DxSeries
               :bar-padding="0.1"
-              type="bar"
+              type="area"
               argument-field="dayname"
               value-field="appointment"
               name="appointment"
@@ -67,13 +67,13 @@
 
             <DxSeries
               :bar-padding="0.1"
-              type="bar"
+              type="area"
               argument-field="dayname"
               value-field="document"
               name="document"
               color="#8FBC8F"
             />
-
+            <DxTooltip :enabled="true"/>
             <DxLegend orientation="horizontal" position="outside"/>
           </DxChart>
         </el-card>
@@ -137,8 +137,7 @@ import DxPieChart, {
   DxTooltip,
   DxFormat,
   DxLabel,
-  DxConnector,
-  DxExport
+  DxConnector
 } from 'devextreme-vue/pie-chart';
 
 import { getVisitDashboardWeek, getVisitDashboardMonth, getVisitDeptDashboard } from '@/api/dashboard'
@@ -153,7 +152,6 @@ export default {
     DxFormat,
     DxLabel,
     DxConnector,
-    DxExport,
     DxTooltip,
     DxLegend
   },
@@ -201,7 +199,7 @@ export default {
 <style lang="scss" scoped>
   .dashboard {
     &-container {
-      margin: 30px;
+      margin: 10px;
     }
     &-text {
       font-size: 30px;
