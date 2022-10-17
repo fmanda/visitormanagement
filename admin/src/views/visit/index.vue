@@ -162,6 +162,15 @@
     <el-dialog :title="dialogData.caption" :visible.sync="dialogVisible" width="900px" :before-close="handleCloseDlg"
       class="inputdialog" top="5vh"
     >
+      <el-alert style="white-space: pre-line"
+        description="Pihak PT Tiga Serangkai akan menjaga kerahasiaan data, identitas, dan dokumen yang diberikan,
+        dan tidak akan menggunakannya selain untuk keperluan internal, dan tidak melanggar hukum yang berlaku"
+        :closable="false"
+        show-icon
+        effect="dark"
+        type="info">
+      </el-alert>
+      <br/>
       <el-row>
         <el-col :span="11" >
           <el-descriptions class="margin-top" title="" :column="1" border>
@@ -346,6 +355,14 @@
     <el-dialog title="Foto Pengunjung" :visible.sync="dialogPhotoVisible" width="800px" height="300px"
       top="5vh" class="inputdialog"
     >
+      <el-alert style="white-space: pre-line"
+        description="Pihak PT Tiga Serangkai akan menjaga kerahasiaan data, identitas, dan dokumen yang diberikan,
+        dan tidak akan menggunakannya selain untuk keperluan internal, dan tidak melanggar hukum yang berlaku"
+        :closable="false"
+        show-icon
+        effect="dark"
+        type="info">
+      </el-alert>
       <code v-if="device">{{ device.label }}</code>
         <web-cam
           ref="webcam"

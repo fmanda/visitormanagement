@@ -104,7 +104,7 @@ export const constantRoutes = [
         path: 'appointment',
         name: 'appointment',
         component: () => import('@/views/appointment/index'),
-        meta: { title: 'Appointment', icon: 'el-icon-date' }
+        meta: { title: 'Appointment', icon: 'el-icon-alarm-clock' }
       }
     ]
   },

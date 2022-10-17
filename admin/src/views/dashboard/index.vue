@@ -16,6 +16,9 @@
             palette="Soft Pastel"
             class="dashboard-chart"
           >
+            <DxSize
+              :height="250"
+            />
             <DxSeries argument-field="deptname" value-field="visit">
               <DxLabel:visible="true">
                 <DxConnector :visible="true"/>
@@ -47,6 +50,9 @@
             :data-source="datavisitWeek"
             class="dashboard-chart"
           >
+            <DxSize
+              :height="250"
+            />
             <DxSeries
               :bar-padding="0.1"
               type="area"
@@ -96,6 +102,9 @@
         :data-source="datavisitMonth"
         class="dashboard-chart-month"
       >
+        <DxSize
+          :height="180"
+        />
         <DxSeries
           :bar-padding="0.1"
           type="bar"
@@ -132,7 +141,7 @@
 
 <script>
 
-import { DxChart, DxSeries, DxLegend } from 'devextreme-vue/chart';
+import { DxChart, DxSeries, DxLegend, DxSize } from 'devextreme-vue/chart';
 import DxPieChart, {
   DxTooltip,
   DxFormat,
@@ -153,7 +162,8 @@ export default {
     DxLabel,
     DxConnector,
     DxTooltip,
-    DxLegend
+    DxLegend,
+    DxSize
   },
   data() {
     return {
@@ -216,10 +226,10 @@ export default {
   }
 
   .dashboard-chart {
-    height: 300px;
+    height: 250px;
   }
 
   .dashboard-chart-month {
-    height: 200px;
+    height: 180px;
   }
 </style>
