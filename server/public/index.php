@@ -29,22 +29,22 @@ $app->setBasePath('/public');
 
 
 //
-// $app->add(new Tuupola\Middleware\JwtAuthentication([
-//     "regexp" => "/(.*)/", //default format Bearer <token>
-//     "secret" => $config["secret"],
-//     "algorithm" => ["HS256"],
-//     "rules" => [
-//         new Tuupola\Middleware\JwtAuthentication\RequestPathRule([
-//             "ignore" => [
-//               $app->getBasePath() . "/check",
-//               $app->getBasePath() . "/login"
-//             ]
-//         ]),
-//         new Tuupola\Middleware\JwtAuthentication\RequestMethodRule([
-//             "ignore" => ["OPTIONS"]
-//         ])
-//     ]
-// ]));
+$app->add(new Tuupola\Middleware\JwtAuthentication([
+    "regexp" => "/(.*)/", //default format Bearer <token>
+    "secret" => $config["secret"],
+    "algorithm" => ["HS256"],
+    "rules" => [
+        new Tuupola\Middleware\JwtAuthentication\RequestPathRule([
+            "ignore" => [
+              $app->getBasePath() . "/check",
+              $app->getBasePath() . "/login"
+            ]
+        ]),
+        new Tuupola\Middleware\JwtAuthentication\RequestMethodRule([
+            "ignore" => ["OPTIONS"]
+        ])
+    ]
+]));
 
 
 $app->options('/{routes:.+}', function ($request, $response, $args) {
