@@ -71,7 +71,8 @@
 			try {
 				if ( !isset($obj->entrydate)) {
 
-					date_default_timezone_set('Asia/Jakarta');
+					date_default_timezone_set("UTC");
+					// date_default_timezone_set('Asia/Jakarta');
 					$date = new \DateTime();
 					$obj->entrydate = $date->format('Y-m-d H:i:s');
 				}
@@ -116,7 +117,8 @@
 			$db = $db->connect();
 			$db->beginTransaction();
 			try {
-				date_default_timezone_set('Asia/Jakarta');
+				date_default_timezone_set("UTC");
+				// date_default_timezone_set('Asia/Jakarta');
 				$date = new \DateTime();
 				$exitdate = $date->format('Y-m-d H:i:s');
 

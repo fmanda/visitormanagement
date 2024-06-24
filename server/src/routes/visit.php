@@ -184,7 +184,8 @@ $app->get('/endvisit/{id}', function ($request, $response, $args) {
 $app->get('/currentappointment', function ($request, $response) {
   try{
     // $data = ModelUsers::retrieveList();
-    date_default_timezone_set('Asia/Jakarta');
+    date_default_timezone_set("UTC");
+    // date_default_timezone_set('Asia/Jakarta');
     $date = new \DateTime();
     $filterdate = $date->format('Y-m-d');
 
@@ -203,7 +204,9 @@ $app->get('/currentappointment', function ($request, $response) {
             left join visitor b on a.visitor_id = b.id
             left join jsection c on a.dept_id = c.section_id
             left join visit d on d.appointment_id = a.id
-            where d.id is null and a.planningdate::date = '" . $filterdate . "'"  ;
+            where d.id is null and a.planningdate::date between current_date-7 and current_date+7 ";
+
+            // where d.id is null and a.planningdate::date = '" . $filterdate . "'"  ;
 
     $data = DB::openQuery($str);
     $json = json_encode($data);

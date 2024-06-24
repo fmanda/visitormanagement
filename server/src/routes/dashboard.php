@@ -8,7 +8,8 @@ require_once '../src/classes/DB.php';
 
 $app->get('/visitdashboardweek', function ($request, $response) {
   try{
-    date_default_timezone_set('Asia/Jakarta');
+    date_default_timezone_set("UTC");
+    // date_default_timezone_set('Asia/Jakarta');
     $date = new \DateTime();
     $date = "'". $date->format('Y-m-d H:i:s') ."'" ;
     //call current_date from here makes date shift ???
@@ -35,7 +36,8 @@ $app->get('/visitdashboardweek', function ($request, $response) {
 
 $app->get('/visitdashboardmonth', function ($request, $response) {
   try{
-    date_default_timezone_set('Asia/Jakarta');
+    date_default_timezone_set("UTC");
+    // date_default_timezone_set('Asia/Jakarta');
     $date = new \DateTime();
     $date = "'". $date->format('Y-m-d H:i:s') ."'" ;
     //call current_date from here makes date shift ???
@@ -63,7 +65,8 @@ $app->get('/visitdashboardmonth', function ($request, $response) {
 
 $app->get('/visitdeptdashboard', function ($request, $response) {
   try{
-    date_default_timezone_set('Asia/Jakarta');
+    date_default_timezone_set("UTC");
+    // date_default_timezone_set('Asia/Jakarta');
     $date = new \DateTime();
     $date = "'". $date->format('Y-m-d H:i:s') ."'" ;
     //call current_date from here makes date shift ???

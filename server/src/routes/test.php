@@ -82,3 +82,22 @@ $app->post('/test', function ($request, $response) {
 	}
 
 });
+
+
+$app->get('/testDate', function ($request, $response) {
+	try{
+		date_default_timezone_set("UTC");
+		// date_default_timezone_set('Asia/Jakarta');
+		$date = new \DateTime();
+		$exitdate = $date->format('Y-m-d H:i:s');
+	
+		$response->getBody()->write($exitdate);
+	
+		return $response;
+	}catch(Exception $e){
+		$msg = $e->getMessage();
+		$response->getBody()->write($msg);
+			return $response->withStatus(500)
+				->withHeader('Content-Type', 'text/html');
+	}
+  });

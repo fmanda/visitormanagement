@@ -63,8 +63,8 @@
 			$isnew = static::isNewTransaction($obj);
 			try {
 				if ( !isset($obj->calldate)) {
-
-					date_default_timezone_set('Asia/Jakarta');
+					date_default_timezone_set("UTC");
+					// date_default_timezone_set('Asia/Jakarta');
 					$date = new \DateTime();
 					$obj->calldate = $date->format('Y-m-d H:i:s');
 				}

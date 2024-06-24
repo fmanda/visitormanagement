@@ -113,6 +113,9 @@ export function getElapsedTime(startTime) {
   // Record end time
   const endTime = new Date();
 
+  //server time over 2 minutes : vosp.tigaserangkai.co.id
+  endTime.setMinutes(endTime.getMinutes() + 2);
+
   // Compute time difference in milliseconds
   let timeDiff = endTime.getTime() - startTime.getTime();
 
@@ -152,7 +155,8 @@ export function getElapsedTime(startTime) {
   if (totalHoursAsString === '00') {
     return minutesAsString + ':' + secondsAsString;
   } else {
-    return totalHoursAsString + ':' + minutesAsString + ':' + secondsAsString;
+    // return startTime; // 'Hours : ' + totalHoursAsString + ': Minutes : ' + minutesAsString + ': Seconds :' + secondsAsString;
+    return  totalHoursAsString + ':' + minutesAsString + ':' + secondsAsString;
   }
 }
 

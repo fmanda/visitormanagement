@@ -17,7 +17,7 @@
       style = "margin-bottom: 10px"
     >
       <el-menu-item index="1"><i class="el-icon-user"></i>Sedang Berlangsung</el-menu-item>
-      <el-menu-item index="2"><i class="el-icon-alarm-clock"></i>Janji Hari Ini</el-menu-item>
+      <el-menu-item index="2"><i class="el-icon-alarm-clock"></i>Janji Minggu Ini</el-menu-item>
       <el-menu-item index="3"><i class="el-icon-date"></i>Semua Kunjungan</el-menu-item>
       <el-menu-item index="4"><i class="el-icon-document"></i>Dokumen Masuk</el-menu-item>
     </el-menu>
